@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FitNourish Pro — Plano de Treino | Crys</title>
+<title>FitNourish Pro — Treino & Alimentação | Crys</title>
+<meta name="description" content="FitNourish Pro — ficha completa de treino e alimentação do Crystopher (Crys). 3 fases, 1.850 kcal, 220 g de proteína, com auto-seleção de fase pela data.">
+<meta name="theme-color" content="#04060f">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<meta property="og:title" content="FitNourish Pro — Ficha Completa de Treino & Alimentação | Crys">
+<meta property="og:description" content="Plano integrado em 3 fases · 1.850 kcal · 220 g proteína · auto-seleção por data.">
+<meta property="og:type" content="website">
+<script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
@@ -24,12 +31,36 @@
   --text:#eef3ff;
   --dim:#9aa7c4;
   --muted:#5d6a8a;
+  --soft:#c6d2ec;
   --accent:#00ff9d;
   --glow:0 0 22px rgba(0,255,157,.45);
 }
+:root[data-theme="light"]{
+  --bg:#eef1f8;
+  --bg-2:#ffffff;
+  --panel:rgba(15,23,42,.04);
+  --panel-2:rgba(255,255,255,.88);
+  --border:rgba(15,23,42,.10);
+  --border-strong:rgba(15,23,42,.18);
+  --text:#1a2138;
+  --dim:#46536b;
+  --muted:#6b7890;
+  --soft:#33405a;
+  --neon:#0a9d63;
+  --cyan:#007f9e;
+  --amber:#a87c00;
+  --purple:#7c3aed;
+  --accent:#0a9d63;
+}
+:root[data-theme="light"] .nav{background:rgba(238,241,248,.88)}
+:root[data-theme="light"] .detail{background:rgba(15,23,42,.04)}
+:root[data-theme="light"] .stat:hover{box-shadow:0 10px 34px rgba(15,23,42,.16)}
+:root[data-theme="light"] .day:hover{box-shadow:0 12px 30px rgba(15,23,42,.16)}
+:root[data-theme="light"] .ex:hover{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent),0 14px 34px rgba(15,23,42,.14)}
 
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
+[id]{scroll-margin-top:90px}
 body{
   font-family:'Inter',sans-serif;
   background:var(--bg);
@@ -66,7 +97,7 @@ body{
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border-bottom:1px solid var(--border);
 }
-.nav-inner{max-width:1180px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.nav-inner{max-width:1180px;margin:0 auto;padding:12px 22px 12px 64px;display:flex;align-items:center;justify-content:space-between;gap:14px}
 .brand{display:flex;align-items:center;gap:10px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:2px;font-size:1.05rem;text-transform:uppercase;white-space:nowrap}
 .brand .bolt{
   width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:1rem;
@@ -86,6 +117,77 @@ body{
 .today-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;border:1px solid var(--border-strong);background:var(--panel-2);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.8rem;letter-spacing:.5px;white-space:nowrap}
 .today-badge .tb-date{color:var(--dim)}
 .today-badge .tb-phase{color:var(--neon);text-shadow:0 0 12px rgba(0,255,157,.4)}
+.skip-link{position:absolute;left:-9999px;top:12px;z-index:100;background:var(--neon);color:#04110d;padding:10px 16px;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Rajdhani',sans-serif;letter-spacing:1px}
+.skip-link:focus{left:12px}
+.to-top{position:fixed;right:20px;bottom:20px;z-index:60;width:46px;height:46px;border-radius:12px;border:1px solid var(--border-strong);background:var(--panel-2);color:var(--neon);font-size:1.3rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.to-top.show{opacity:1;pointer-events:auto}
+.to-top:hover{transform:translateY(-3px);border-color:var(--neon)}
+.theme-toggle{width:38px;height:38px;border-radius:10px;border:1px solid var(--border-strong);background:var(--panel-2);color:var(--text);font-size:1.05rem;cursor:pointer;display:grid;place-items:center;transition:.25s;flex-shrink:0}
+.theme-toggle:hover{border-color:var(--neon);transform:translateY(-1px)}
+
+/* ---------- hamburger menu (drawer) ---------- */
+.hamburger{
+  position:fixed;top:14px;left:14px;z-index:95;
+  width:40px;height:40px;border-radius:11px;
+  border:1px solid var(--border-strong);background:var(--panel-2);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  transition:.25s;box-shadow:0 8px 24px rgba(0,0,0,.35);
+}
+.hamburger span{display:block;width:18px;height:2px;border-radius:2px;background:var(--neon);transition:.3s cubic-bezier(.2,.8,.2,1)}
+.hamburger:hover{border-color:var(--neon);transform:translateY(-1px)}
+.hamburger.open{opacity:0;pointer-events:none;transform:translateY(-6px)}
+
+.menu-backdrop{
+  position:fixed;inset:0;z-index:80;background:rgba(3,5,12,.55);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:opacity .35s ease;
+}
+.menu-backdrop.open{opacity:1;pointer-events:auto}
+
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;z-index:90;
+  width:min(320px,86vw);
+  background:var(--bg-2);
+  border-right:1px solid var(--border-strong);
+  box-shadow:24px 0 60px rgba(0,0,0,.5);
+  transform:translateX(-105%);
+  transition:transform .38s cubic-bezier(.2,.8,.2,1);
+  display:flex;flex-direction:column;overflow-y:auto;
+}
+.sidebar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--neon),var(--cyan),transparent)}
+.sidebar.open{transform:translateX(0)}
+
+.sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border)}
+.sidebar-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:2px;text-transform:uppercase;color:var(--text)}
+.sidebar-close{width:34px;height:34px;border-radius:9px;border:1px solid var(--border-strong);background:var(--panel-2);color:var(--dim);font-size:1rem;cursor:pointer;display:grid;place-items:center;transition:.25s}
+.sidebar-close:hover{color:var(--neon);border-color:var(--neon)}
+
+.sidebar-nav{display:flex;flex-direction:column;padding:12px}
+.side-link{
+  display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:12px;
+  text-decoration:none;color:var(--dim);font-size:.92rem;font-weight:500;
+  border:1px solid transparent;transition:.22s;
+}
+.side-link .side-emoji{font-size:1.1rem;line-height:1;min-width:24px;text-align:center;transition:.22s}
+.side-link .side-txt{flex:1}
+.side-link .side-arrow{color:var(--neon);opacity:0;transform:translateX(-6px);transition:.22s;font-size:1.1rem;line-height:1}
+.side-link:hover{color:var(--text);background:var(--panel);border-color:var(--border)}
+.side-link:hover .side-emoji{transform:scale(1.18)}
+.side-link:hover .side-arrow{opacity:1;transform:translateX(0)}
+
+@keyframes sideIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+.sidebar.open .side-link{animation:sideIn .42s cubic-bezier(.2,.8,.2,1) both}
+.sidebar.open .side-link:nth-child(1){animation-delay:.04s}
+.sidebar.open .side-link:nth-child(2){animation-delay:.08s}
+.sidebar.open .side-link:nth-child(3){animation-delay:.12s}
+.sidebar.open .side-link:nth-child(4){animation-delay:.16s}
+.sidebar.open .side-link:nth-child(5){animation-delay:.20s}
+.sidebar.open .side-link:nth-child(6){animation-delay:.24s}
+.sidebar.open .side-link:nth-child(7){animation-delay:.28s}
+.sidebar.open .side-link:nth-child(8){animation-delay:.32s}
+.sidebar.open .side-link:nth-child(9){animation-delay:.36s}
+.sidebar.open .side-link:nth-child(10){animation-delay:.40s}
 
 /* ---------- hero ---------- */
 .hero{padding:70px 0 46px;text-align:center;position:relative}
@@ -148,6 +250,7 @@ body{
 .day.rest{border-color:rgba(255,122,61,.35);background:rgba(255,122,61,.06)}
 .day.rest .dwork{color:var(--orange)}
 .day.rest .dcardio{color:var(--orange)}
+.day[data-tab]{cursor:pointer}
 
 /* ---------- alerts ---------- */
 .alert{
@@ -210,6 +313,8 @@ table.volume .sets{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(-
 .ptab:hover{color:var(--text);border-color:var(--border-strong);transform:translateY(-2px)}
 .ptab.active{color:#04110d;border-color:transparent;background:linear-gradient(135deg,var(--neon),var(--cyan));box-shadow:0 0 26px rgba(0,255,157,.35)}
 .ptab.active span{color:rgba(4,17,13,.72)}
+.ptab .today-flag{font-style:normal;font-size:.56rem;font-weight:800;letter-spacing:1px;padding:2px 7px;border-radius:99px;background:var(--amber);color:#1a1a00;margin-top:3px;text-transform:none;line-height:1;box-shadow:0 0 10px rgba(255,214,10,.5)}
+.ptab.active .today-flag{background:#fff;color:#0a0a00}
 .phase-panel{display:none}
 .phase-panel.active{display:block;animation:rise .45s ease}
 
@@ -257,7 +362,7 @@ table.volume .sets{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(-
 .detail{border-radius:12px;padding:13px 16px;margin-bottom:10px;
   background:rgba(0,0,0,.28);border:1px solid var(--border);border-left:3px solid color-mix(in srgb,var(--accent) 65%,transparent)}
 .detail h4{font-family:'Rajdhani',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:5px}
-.detail p{font-size:.88rem;color:#c6d2ec;line-height:1.65}
+.detail p{font-size:.88rem;color:var(--soft);line-height:1.65}
 .yt{display:inline-flex;align-items:center;gap:7px;margin-top:8px;padding:7px 15px;border-radius:9px;
   background:var(--red);color:#fff!important;font-size:.78rem;font-weight:700;text-decoration:none;transition:.25s;letter-spacing:.3px}
 .yt:hover{background:#ff5470;transform:translateY(-1px);box-shadow:0 6px 18px rgba(255,59,92,.45)}
@@ -279,12 +384,7 @@ table.volume .sets{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(-
 .gcard h4{font-family:'Rajdhani',sans-serif;font-size:1rem;letter-spacing:1px;text-transform:uppercase;color:var(--neon);margin-bottom:7px}
 .gcard p{font-size:.84rem;color:var(--dim);line-height:1.6}
 
-/* ---------- hiit / progression ---------- */
-.hiit{border-radius:18px;padding:24px;border:1px solid rgba(255,122,61,.4);
-  background:linear-gradient(135deg,rgba(255,122,61,.12),rgba(255,59,92,.05));backdrop-filter:blur(8px);margin-bottom:16px}
-.hiit h3{font-family:'Rajdhani',sans-serif;font-size:1.15rem;letter-spacing:1px;text-transform:uppercase;color:var(--orange);margin-bottom:10px}
-.hiit p{font-size:.88rem;color:var(--dim);line-height:1.75}
-.hiit b{color:var(--text)}
+/* ---------- progression ---------- */
 .prog{border-radius:18px;padding:22px 24px;margin-bottom:14px;background:var(--panel);border:1px solid var(--border);transition:.3s}
 .prog:hover{border-color:var(--border-strong)}
 .prog h3{font-family:'Rajdhani',sans-serif;font-size:1.02rem;letter-spacing:1px;text-transform:uppercase;color:var(--neon);margin-bottom:12px}
@@ -296,7 +396,7 @@ table.volume .sets{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(-
 .data-wrap{border-radius:18px;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);background:var(--panel);backdrop-filter:blur(10px);margin:0 0 30px}
 table.data{width:100%;border-collapse:collapse;min-width:520px}
 table.data th{font-family:'Rajdhani',sans-serif;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--neon);text-align:left;padding:14px 18px;background:rgba(0,255,157,.05);border-bottom:1px solid var(--border)}
-table.data td{padding:12px 18px;font-size:.88rem;border-bottom:1px solid var(--border);vertical-align:top;color:#c6d2ec}
+table.data td{padding:12px 18px;font-size:.88rem;border-bottom:1px solid var(--border);vertical-align:top;color:var(--soft)}
 table.data tr:last-child td{border-bottom:none}
 table.data tbody tr{transition:.2s}
 table.data tbody tr:hover{background:var(--panel-2)}
@@ -328,26 +428,59 @@ table.data b{color:var(--text)}
   .reveal{opacity:1;transform:none;transition:none}
   .hero h1{animation:none!important}
   .orb{animation:none!important}
+  .tab-content,.phase-panel{animation:none!important}
+  .sidebar,.menu-backdrop,.hamburger span{transition:none}
+  .sidebar.open .side-link{animation:none}
 }
 
 /* print */
 @media print{
   body{background:#fff;color:#000}
-  .nav,.bg-layer,.workout-tabs{display:none}
+  .nav,.bg-layer,.workout-tabs,.phase-tabs,.hamburger,.menu-backdrop,.sidebar{display:none}
+  .phase-panel{display:block!important;break-before:page}
+  #fase-atual{break-before:auto}
   .tab-content{display:block!important}
   .ex-body{max-height:none!important}
 }
 @media (max-width:640px){
   .ex-inner{padding:2px 14px 16px 16px}
   .alts{grid-template-columns:1fr}
-  .nav-inner{flex-direction:column;align-items:stretch}
+  .nav-inner{flex-direction:column;align-items:stretch;padding:12px 14px 12px 60px}
   .today-badge{justify-content:center}
+  .phase-tabs{flex-wrap:wrap;gap:6px}
+  .ptab{flex:1 1 30%;min-width:0;padding:10px 12px}
+  .ptab span{font-size:.62rem}
   .wtab{flex:1 1 45%}
   table.data th,table.data td{padding:10px 12px;font-size:.78rem}
 }
 </style>
 </head>
 <body>
+
+<button class="hamburger" id="hamburger" aria-label="Abrir menu de seções" aria-expanded="false" aria-controls="sidebar">
+  <span></span><span></span><span></span>
+</button>
+<div class="menu-backdrop" id="menuBackdrop" aria-hidden="true"></div>
+<aside class="sidebar" id="sidebar" aria-hidden="true" aria-label="Sumário de seções">
+  <div class="sidebar-head">
+    <span class="sidebar-title">📑 Sumário</span>
+    <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">✕</button>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="#perfil" class="side-link"><span class="side-emoji">👤</span><span class="side-txt">Perfil &amp; Metas</span><span class="side-arrow">›</span></a>
+    <a href="#semana" class="side-link"><span class="side-emoji">📅</span><span class="side-txt">Distribuição Semanal</span><span class="side-arrow">›</span></a>
+    <a href="#volume" class="side-link"><span class="side-emoji">📊</span><span class="side-txt">Volume Semanal</span><span class="side-arrow">›</span></a>
+    <a href="#parametros" class="side-link"><span class="side-emoji">⚙️</span><span class="side-txt">Parâmetros da Fase</span><span class="side-arrow">›</span></a>
+    <a href="#treinos" class="side-link"><span class="side-emoji">🏋️</span><span class="side-txt">Treinos</span><span class="side-arrow">›</span></a>
+    <a href="#orientacoes" class="side-link"><span class="side-emoji">📋</span><span class="side-txt">Orientações de Execução</span><span class="side-arrow">›</span></a>
+    <a href="#alimentar" class="side-link"><span class="side-emoji">🍽️</span><span class="side-txt">Plano Alimentar</span><span class="side-arrow">›</span></a>
+    <a href="#aceleracao" class="side-link"><span class="side-emoji">🚀</span><span class="side-txt">Plano de Aceleração</span><span class="side-arrow">›</span></a>
+    <a href="#glossario" class="side-link"><span class="side-emoji">📖</span><span class="side-txt">Glossário</span><span class="side-arrow">›</span></a>
+    <a href="#fontes" class="side-link"><span class="side-emoji">🔬</span><span class="side-txt">Fontes Científicas</span><span class="side-arrow">›</span></a>
+  </nav>
+</aside>
+
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
 
 <canvas id="particles"></canvas>
 <div class="cursor-glow" id="cursorGlow"></div>
@@ -363,16 +496,17 @@ table.data b{color:var(--text)}
       <button data-phase="fase-1">📍 Fase 1</button>
       <button data-phase="fase-2">📍 Fase 2</button>
     </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro/escuro">🌙</button>
   </div>
 </nav>
 
-<div class="container">
+<div class="container" id="main" tabindex="-1">
 
   <header class="hero">
     <div class="kicker" data-parallax="0.12">⚡ Força · Cutting · Consistência</div>
     <h1 data-parallax="0.22">FitNourish Pro</h1>
     <div class="subtitle" data-parallax="0.30">Plano Integrado <b>3 fases</b> · Crystopher (Crys)</div>
-    <div class="badge" data-parallax="0.38"><i>3</i> séries · Core 3x/sem · ~45 min + 15 min caminhada</div>
+    <div class="badge" data-parallax="0.38"><i>3</i> séries · Core 3x/sem · 45–50 min + 15–20 min caminhada</div>
   </header>
 
   <div class="stats">
@@ -385,7 +519,7 @@ table.data b{color:var(--text)}
     <div class="stat" style="--c:var(--orange)"><div class="label">Meta peso</div><div class="value">85 kg</div></div>
   </div>
 
-  <div class="section-head"><span class="bar"></span><h2>Perfil & Metas</h2><span class="count">acompanhamento</span></div>
+  <div class="section-head" id="perfil"><span class="bar"></span><h2>Perfil & Metas</h2><span class="count">acompanhamento</span></div>
   <div class="data-wrap">
     <table class="data">
       <thead><tr><th>Campo</th><th>Registro</th></tr></thead>
@@ -410,15 +544,15 @@ table.data b{color:var(--text)}
     </div>
   </div>
 
-  <div class="section-head"><span class="bar"></span><h2>Distribuição Semanal</h2><span class="count">7 dias</span></div>
+  <div class="section-head" id="semana"><span class="bar"></span><h2>Distribuição Semanal</h2><span class="count">7 dias</span></div>
   <div class="schedule">
-    <div class="day"><div class="dname">Segunda</div><div class="dwork">Pernas + Ombros</div><span class="core">+ Core ✅</span><div class="dcardio">15-20 min caminhada</div></div>
-    <div class="day"><div class="dname">Terça</div><div class="dwork">Peito + Tríceps</div><div class="dcardio">15-20 min caminhada</div></div>
-    <div class="day"><div class="dname">Quarta</div><div class="dwork">Costas + Bíceps</div><span class="core">+ Core ✅</span><div class="dcardio">15-20 min caminhada</div></div>
-    <div class="day"><div class="dname">Quinta</div><div class="dwork">Pernas + Ombros</div><div class="dcardio">15-20 min caminhada</div></div>
+    <div class="day" data-phase="fase-atual" data-tab="tab-pernas"><div class="dname">Segunda</div><div class="dwork">Pernas + Ombros</div><span class="core">+ Core ✅</span><div class="dcardio">15-20 min caminhada</div></div>
+    <div class="day" data-phase="fase-atual" data-tab="tab-peito"><div class="dname">Terça</div><div class="dwork">Peito + Tríceps</div><div class="dcardio">15-20 min caminhada</div></div>
+    <div class="day" data-phase="fase-atual" data-tab="tab-costas"><div class="dname">Quarta</div><div class="dwork">Costas + Bíceps</div><span class="core">+ Core ✅</span><div class="dcardio">15-20 min caminhada</div></div>
+    <div class="day" data-phase="fase-atual" data-tab="tab-pernas"><div class="dname">Quinta</div><div class="dwork">Pernas + Ombros</div><div class="dcardio">15-20 min caminhada</div></div>
     <div class="day rest"><div class="dname">Sexta</div><div class="dwork">Descanso Ativo</div><div class="dcardio">40-45 min esteira</div></div>
-    <div class="day"><div class="dname">Sábado</div><div class="dwork">Peito + Tríceps</div><span class="core">+ Core ✅</span><div class="dcardio">15-20 min caminhada</div></div>
-    <div class="day"><div class="dname">Domingo</div><div class="dwork">Costas + Bíceps</div><div class="dcardio">15-20 min caminhada</div></div>
+    <div class="day" data-phase="fase-atual" data-tab="tab-peito"><div class="dname">Sábado</div><div class="dwork">Peito + Tríceps</div><span class="core">+ Core ✅</span><div class="dcardio">15-20 min caminhada</div></div>
+    <div class="day" data-phase="fase-atual" data-tab="tab-costas"><div class="dname">Domingo</div><div class="dwork">Costas + Bíceps</div><div class="dcardio">15-20 min caminhada</div></div>
   </div>
 
   <div class="alert">
@@ -429,7 +563,7 @@ table.data b{color:var(--text)}
     </div>
   </div>
 
-  <div class="section-head"><span class="bar"></span><h2>Volume Semanal</h2><span class="count">sets / semana</span></div>
+  <div class="section-head" id="volume"><span class="bar"></span><h2>Volume Semanal</h2><span class="count">sets / semana</span></div>
   <div class="volume-wrap">
     <table class="volume">
       <thead><tr><th>Músculo</th><th>Exercícios</th><th>Sets/sem</th><th>Faixa ótima</th><th>Volume</th></tr></thead>
@@ -445,7 +579,15 @@ table.data b{color:var(--text)}
     </table>
   </div>
 
-  <div class="section-head"><span class="bar"></span><h2>Parâmetros da Fase</h2><span class="count">intermediária</span></div>
+  <div class="alert">
+    <div class="aico">📊</div>
+    <div>
+      <h3>Volume por fase</h3>
+      <p><b>Fase Atual:</b> 18–24 sets/músculo/semana (tabela acima) · <b>Fase 1:</b> drop set no último exercício de cada grupo adiciona 1 série extra · <b>Fase 2:</b> super sets mantêm o total de séries com maior densidade (menos pausa).</p>
+    </div>
+  </div>
+
+  <div class="section-head" id="parametros"><span class="bar"></span><h2>Parâmetros da Fase</h2><span class="count">intermediária</span></div>
   <div class="data-wrap">
     <table class="data">
       <thead><tr><th>Variável</th><th>Parâmetro</th></tr></thead>
@@ -462,7 +604,7 @@ table.data b{color:var(--text)}
     </table>
   </div>
 
-  <div class="section-head"><span class="bar"></span><h2>Treinos</h2><span class="count">3 fases</span></div>
+  <div class="section-head" id="treinos"><span class="bar"></span><h2>Treinos</h2><span class="count">3 fases</span></div>
 
   <div class="phase-tabs" id="phaseTabs">
     <button class="ptab active" data-phase="fase-atual">📍 Fase Atual <span>29/09 a 12/10</span></button>
@@ -471,6 +613,13 @@ table.data b{color:var(--text)}
   </div>
 
   <div class="phase-panel active" id="fase-atual">
+    <div class="alert">
+      <div class="aico">📌</div>
+      <div>
+        <h3>Fase Atual · Intermediária (29/09 a 12/10)</h3>
+        <p>Carga +8–12% (ombros/isolados +5–8%) · RIR 1 (0 no último do grupo) · Core (Abdominal + Prancha) apenas Seg, Qua e Sáb · Sem HIIT nesta fase.</p>
+      </div>
+    </div>
   <div class="workout-tabs" id="workoutTabs">
     <button class="wtab active" data-tab="tab-pernas"><span class="tic">🦵</span> Pernas + Ombros <span class="day-tag">Seg / Qui</span></button>
     <button class="wtab" data-tab="tab-peito"><span class="tic">💪</span> Peito + Tríceps <span class="day-tag">Ter / Sáb</span></button>
@@ -992,44 +1141,44 @@ table.data b{color:var(--text)}
 
     <div id="tab-f1-pernas" class="tab-content active">
       <div class="wtitle"><div class="icon">🦵</div><div><h2>Fase 1 — Pernas + Ombros</h2><div class="meta">Segunda e Quinta · drop set + HIIT 1×/sem · Core na Segunda</div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">1</div><div class="ex-info"><h3>Leg Press 45°</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 2 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Quadríceps + Glúteos</p></div><div class="detail"><h4>📋 Execução</h4><p>Costas apoiadas, descer controlado, subir sem travar os joelhos.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=leg+press+45+graus+como+fazer" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">2</div><div class="ex-info"><h3>Cadeira Extensora</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Quadríceps</p></div><div class="detail"><h4>📋 Execução</h4><p>Sentado, estende as pernas até quase travar; desce controlado.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cadeira+extensora+execucao+correta" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">3</div><div class="ex-info"><h3>Mesa Flexora</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Isquiotibiais</p></div><div class="detail"><h4>📋 Execução</h4><p>Deitado de bruços, flexiona os joelhos; não arquear a lombar.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=mesa+flexora+execucao+correta" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">1</div><div class="ex-info"><h3>Leg Press 45°</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 2 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Quadríceps + Glúteos</p></div><div class="detail"><h4>📋 Execução</h4><p>Costas apoiadas, descer controlado, subir sem travar os joelhos.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=leg+press+45+graus+como+fazer" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Hack Squat na Máquina</div><div class="ad">Mesmo movimento com suporte de coluna.</div><a class="yt" href="https://www.youtube.com/results?search_query=hack+squat+maquina+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Agachamento no Smith</div><div class="ad">Barra guiada, mais seguro.</div><a class="yt" href="https://www.youtube.com/results?search_query=agachamento+smith+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">2</div><div class="ex-info"><h3>Cadeira Extensora</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Quadríceps</p></div><div class="detail"><h4>📋 Execução</h4><p>Sentado, estende as pernas até quase travar; desce controlado.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cadeira+extensora+execucao+correta" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Extensão na Polia c/ Tornozeleira</div><div class="ad">Polia baixa com tornozeleira.</div><a class="yt" href="https://www.youtube.com/results?search_query=extensao+perna+polia+tornozeleira" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Cadeira Extensora Unilateral</div><div class="ad">Uma perna por vez.</div><a class="yt" href="https://www.youtube.com/results?search_query=cadeira+extensora+unilateral" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">3</div><div class="ex-info"><h3>Mesa Flexora</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Isquiotibiais</p></div><div class="detail"><h4>📋 Execução</h4><p>Deitado de bruços, flexiona os joelhos; não arquear a lombar.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=mesa+flexora+execucao+correta" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Cadeira Flexora Sentada</div><div class="ad">Mesma função sentado.</div><a class="yt" href="https://www.youtube.com/results?search_query=cadeira+flexora+sentada+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Flexão de Perna na Polia</div><div class="ad">Polia baixa deitado.</div><a class="yt" href="https://www.youtube.com/results?search_query=flexao+perna+polia+deitado" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">4</div><div class="ex-info"><h3>Desenvolvimento c/ Halteres Sentado <span style="color:var(--pink);font-size:.7rem;font-weight:700">NOVO</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Deltoide anterior + tríceps</p></div><div class="detail"><h4>📋 Execução</h4><p>Sentado, empurra os halteres para cima; desce até a altura das orelhas.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=desenvolvimento+halteres+sentado+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Desenvolvimento Arnold</div><a class="yt" href="https://www.youtube.com/results?search_query=desenvolvimento+arnold+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Desenvolvimento na Máquina</div><a class="yt" href="https://www.youtube.com/results?search_query=desenvolvimento+ombro+maquina+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">5</div><div class="ex-info"><h3>Elevação Lateral c/ Halteres</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Deltoide medial</p></div><div class="detail"><h4>📋 Execução</h4><p>Sobe os braços até a altura dos ombros; desce controlado.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=elevacao+lateral+halteres+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Elevação Frontal c/ Halteres</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Deltoide anterior</p></div><div class="detail"><h4>📋 Execução</h4><p>Sobe os braços à frente até a altura dos olhos.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=elevacao+frontal+halteres+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">7</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>O abdômen flexiona o tronco; não puxar apenas com os braços.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">8</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 7-10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Corpo alinhado, quadril sem cair; carga apenas se a técnica permanecer sólida.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">5</div><div class="ex-info"><h3>Elevação Lateral c/ Halteres</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Deltoide medial</p></div><div class="detail"><h4>📋 Execução</h4><p>Sobe os braços até a altura dos ombros; desce controlado.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=elevacao+lateral+halteres+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Elevação Lateral na Polia (cruzada)</div><div class="ad">Tensão constante.</div><a class="yt" href="https://www.youtube.com/results?search_query=elevacao+lateral+polia+cruzada" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Elevação Lateral na Máquina</div><div class="ad">Mais estável, isola deltoide.</div><a class="yt" href="https://www.youtube.com/results?search_query=elevacao+lateral+maquina+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Elevação Frontal c/ Halteres</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Deltoide anterior</p></div><div class="detail"><h4>📋 Execução</h4><p>Sobe os braços à frente até a altura dos olhos.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=elevacao+frontal+halteres+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Elevação Frontal na Polia c/ Corda</div><div class="ad">Tensão constante.</div><a class="yt" href="https://www.youtube.com/results?search_query=elevacao+frontal+polia+corda" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Elevação Frontal c/ Barra</div><div class="ad">Mais carga total.</div><a class="yt" href="https://www.youtube.com/results?search_query=elevacao+frontal+barra+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">7</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Seg</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>O abdômen flexiona o tronco; não puxar apenas com os braços.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Abdominal na Polia (ajoelhado)</div><div class="ad">Ajoelhado na polia alta.</div><a class="yt" href="https://www.youtube.com/results?search_query=abdominal+polia+ajoelhado" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Crunch c/ Anilha no Peito</div><div class="ad">No solo com peso.</div><a class="yt" href="https://www.youtube.com/results?search_query=crunch+anilha+peso" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">8</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Seg</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 7-10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Corpo alinhado, quadril sem cair; carga apenas se a técnica permanecer sólida.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha Lateral c/ Peso</div><div class="ad">Trabalha oblíquos.</div><a class="yt" href="https://www.youtube.com/results?search_query=side+plank+weight+prancha+lateral" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha sem Peso (mais tempo)</div><div class="ad">60-90s.</div><a class="yt" href="https://www.youtube.com/results?search_query=plank+prancha+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">9</div><div class="ex-info"><h3>Drop set no último exercício <span style="color:var(--pink);font-size:.7rem;font-weight:700">NOVO</span></h3><div class="tags"><span class="tag tag-sets">📊 1 série</span><span class="tag tag-reps">15+ reps</span><span class="tag tag-rest">⏱ sem pausa</span><span class="tag tag-load">🏋️ reduzir 20-30%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Como funciona</h4><p>Após chegar perto da falha no último exercício, reduza a carga em 20–30% e continue sem descanso longo.</p></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">10</div><div class="ex-info"><h3>HIIT na Esteira (1×/sem)</h3><div class="tags"><span class="tag tag-sets">📊 1 série</span><span class="tag tag-reps">10 rounds</span><span class="tag tag-rest">⏱ —</span><span class="tag tag-load">🏋️ 30s / 60s</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Protocolo</h4><p>30s corrida a 8–10 km/h + 60s caminhada a 4–5 km/h; inclinação 0% (1–2% opcional).</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=hiit+esteira+30s+corrida+60s+caminhada" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
     </div>
 
     <div id="tab-f1-peito" class="tab-content">
       <div class="wtitle"><div class="icon">💪</div><div><h2>Fase 1 — Peito + Tríceps</h2><div class="meta">Terça e Sábado · drop set + HIIT 1×/sem · Core no Sábado</div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">1</div><div class="ex-info"><h3>Supino Reto na Máquina Articulada</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 2 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Empurrar sem projetar os ombros para frente.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=supino+maquina+articulada+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">2</div><div class="ex-info"><h3>Crucifixo no Voador / Peck Deck</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Buscar contração do peitoral sem perder controle.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=crucifixo+voador+peck+deck+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">3</div><div class="ex-info"><h3>Crossover na Polia Alta</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Puxa de cima para baixo cruzando à frente.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=crossover+polia+alta+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">4</div><div class="ex-info"><h3>Tríceps Pulley com Barra</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Cotovelos estáveis; a carga não deve abrir a execução.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=triceps+pulley+barra+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">5</div><div class="ex-info"><h3>Tríceps Corda</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Mesmo movimento do pulley com corda; abre as mãos no final.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=triceps+corda+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Tríceps Francês na Polia c/ Corda</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>De costas pra polia, corda por cima da cabeça; estende os cotovelos.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=triceps+frances+polia+corda" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">1</div><div class="ex-info"><h3>Supino Reto na Máquina Articulada</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 2 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Empurrar sem projetar os ombros para frente.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=supino+maquina+articulada+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Supino Reto c/ Barra (banco plano)</div><div class="ad">Mais estabilização, amplitude total.</div><a class="yt" href="https://www.youtube.com/results?search_query=supino+reto+barra+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Supino c/ Halteres (banco plano)</div><div class="ad">Amplitude maior, independente.</div><a class="yt" href="https://www.youtube.com/results?search_query=supino+halteres+banco+plano" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">2</div><div class="ex-info"><h3>Crucifixo no Voador / Peck Deck</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Buscar contração do peitoral sem perder controle.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=crucifixo+voador+peck+deck+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Crucifixo c/ Halteres (banco plano)</div><div class="ad">Mais amplitude e alongamento.</div><a class="yt" href="https://www.youtube.com/results?search_query=crucifixo+halteres+banco+plano" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Crossover na Polia Alta</div><div class="ad">Cruzando à frente. Adução do braço.</div><a class="yt" href="https://www.youtube.com/results?search_query=crossover+polia+alta+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">3</div><div class="ex-info"><h3>Crossover na Polia Alta</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Puxa de cima para baixo cruzando à frente.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=crossover+polia+alta+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Crossover na Polia Baixa</div><div class="ad">De baixo pra cima, ativa porção superior.</div><a class="yt" href="https://www.youtube.com/results?search_query=crossover+polia+baixa+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Crucifixo Inverso na Máquina</div><div class="ad">Peck deck invertido.</div><a class="yt" href="https://www.youtube.com/results?search_query=crucifixo+invertido+maquina+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">4</div><div class="ex-info"><h3>Tríceps Pulley com Barra</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Cotovelos estáveis; a carga não deve abrir a execução.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=triceps+pulley+barra+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Tríceps no Banco (dips)</div><div class="ad">Peso corporal, peso extra no colo.</div><a class="yt" href="https://www.youtube.com/results?search_query=triceps+banco+dips+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Tríceps Testa c/ Barra W</div><div class="ad">Deitado, desce na testa.</div><a class="yt" href="https://www.youtube.com/results?search_query=triceps+testa+barra+W+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">5</div><div class="ex-info"><h3>Tríceps Corda</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Mesmo movimento do pulley com corda; abre as mãos no final.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=triceps+corda+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Tríceps Corda Unilateral</div><div class="ad">Uma mão por vez.</div><a class="yt" href="https://www.youtube.com/results?search_query=triceps+corda+unilateral" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Tríceps Polia c/ Pegada Supinada</div><div class="ad">Ativa cabeça longa.</div><a class="yt" href="https://www.youtube.com/results?search_query=triceps+polia+supinada+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Tríceps Francês na Polia c/ Corda</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>De costas pra polia, corda por cima da cabeça; estende os cotovelos.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=triceps+frances+polia+corda" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Tríceps Francês c/ Halter (deitado)</div><div class="ad">Desce atrás da cabeça.</div><a class="yt" href="https://www.youtube.com/results?search_query=triceps+frances+halter+deitado" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Tríceps Francês na Polia (frente)</div><div class="ad">De frente pra polia, empurra pra cima.</div><a class="yt" href="https://www.youtube.com/results?search_query=overhead+triceps+cable+extension" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">7</div><div class="ex-info"><h3>Drop set no último exercício <span style="color:var(--pink);font-size:.7rem;font-weight:700">NOVO</span></h3><div class="tags"><span class="tag tag-sets">📊 1 série</span><span class="tag tag-reps">15+ reps</span><span class="tag tag-rest">⏱ sem pausa</span><span class="tag tag-load">🏋️ reduzir 20-30%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Como funciona</h4><p>Perto da falha, reduza a carga em 20–30% e continue sem descanso longo.</p></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">8</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">9</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 7-10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">8</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Sáb</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Abdominal na Polia (ajoelhado)</div><div class="ad">Ajoelhado na polia alta.</div><a class="yt" href="https://www.youtube.com/results?search_query=abdominal+polia+ajoelhado" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Crunch c/ Anilha no Peito</div><div class="ad">No solo com peso.</div><a class="yt" href="https://www.youtube.com/results?search_query=crunch+anilha+peso" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">9</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Sáb</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 7-10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha Lateral c/ Peso</div><div class="ad">Trabalha oblíquos.</div><a class="yt" href="https://www.youtube.com/results?search_query=side+plank+weight+prancha+lateral" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha sem Peso (mais tempo)</div><div class="ad">60-90s.</div><a class="yt" href="https://www.youtube.com/results?search_query=plank+prancha+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">10</div><div class="ex-info"><h3>HIIT na Esteira (1×/sem)</h3><div class="tags"><span class="tag tag-sets">📊 1 série</span><span class="tag tag-reps">10 rounds</span><span class="tag tag-rest">⏱ —</span><span class="tag tag-load">🏋️ 30s / 60s</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Protocolo</h4><p>30s corrida a 8–10 km/h + 60s caminhada a 4–5 km/h.</p></div></div></div></div>
     </div>
 
     <div id="tab-f1-costas" class="tab-content">
       <div class="wtitle"><div class="icon">🔙</div><div><h2>Fase 1 — Costas + Bíceps</h2><div class="meta">Quarta e Domingo · drop set + HIIT 1×/sem · Core na Quarta</div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">1</div><div class="ex-info"><h3>Puxada Frontal</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 2 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Conduzir com os cotovelos e manter o tronco estável.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=puxada+frontal+lat+pulldown+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">2</div><div class="ex-info"><h3>Remada Baixa com Triângulo</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Puxa o triângulo até o abdômen, cotovelos pra trás.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=remada+baixa+triangulo+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">3</div><div class="ex-info"><h3>Crucifixo Invertido na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Mover pelos ombros, não pela lombar.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=crucifixo+invertido+reverse+peck+deck" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">4</div><div class="ex-info"><h3>Remada Convergente na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Peito apoiado, puxa os pegadores em movimento convergente.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=remada+convergente+maquina+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">5</div><div class="ex-info"><h3>Rosca Direta na Polia</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Cotovelos estáveis e descida controlada.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=rosca+direta+polia+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Rosca Martelo c/ Halteres</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Pegada neutra, flexiona sem rotacionar o punho.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=rosca+martelo+halteres+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">7</div><div class="ex-info"><h3>Rosca Scott na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Braços apoiados, desce controlado.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=rosca+scott+maquina+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">1</div><div class="ex-info"><h3>Puxada Frontal</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 2 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Conduzir com os cotovelos e manter o tronco estável.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=puxada+frontal+lat+pulldown+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Barra Fixa (pegada pronada)</div><div class="ad">Versão com peso corporal.</div><a class="yt" href="https://www.youtube.com/results?search_query=barra+fixa+pronada+pull+up" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Puxada na Polia c/ Pegada Neutra</div><div class="ad">Menos estresse no cotovelo.</div><a class="yt" href="https://www.youtube.com/results?search_query=lat+pulldown+neutral+grip" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">2</div><div class="ex-info"><h3>Remada Baixa com Triângulo</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Puxa o triângulo até o abdômen, cotovelos pra trás.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=remada+baixa+triangulo+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Remada Sentada na Máquina</div><div class="ad">Peito apoiado, mais estável.</div><a class="yt" href="https://www.youtube.com/results?search_query=remada+sentada+maquina+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Remada Curvada c/ Barra</div><div class="ad">Barra livre, tronco 45°. Exige técnica.</div><a class="yt" href="https://www.youtube.com/results?search_query=remada+curvada+barra+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">3</div><div class="ex-info"><h3>Crucifixo Invertido na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Mover pelos ombros, não pela lombar.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=crucifixo+invertido+reverse+peck+deck" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Crucifixo Inverso na Polia (cruzado)</div><div class="ad">Polias altas cruzando pra trás.</div><a class="yt" href="https://www.youtube.com/results?search_query=reverse+fly+cable+cruzado" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Face Pull na Polia c/ Corda</div><div class="ad">Puxa para a testa abrindo cotovelos.</div><a class="yt" href="https://www.youtube.com/results?search_query=face+pull+polia+corda+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">4</div><div class="ex-info"><h3>Remada Convergente na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Peito apoiado, puxa os pegadores em movimento convergente.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=remada+convergente+maquina+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Remada Unilateral c/ Halter (banco)</div><div class="ad">Joelho e mão no banco.</div><a class="yt" href="https://www.youtube.com/results?search_query=remada+unilateral+halter+banco" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Remada na Polia Baixa c/ Pegada Fechada</div><div class="ad">Mais estabilização.</div><a class="yt" href="https://www.youtube.com/results?search_query=remada+polia+baixa+pegada+fechada" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">5</div><div class="ex-info"><h3>Rosca Direta na Polia</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Cotovelos estáveis e descida controlada.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=rosca+direta+polia+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Rosca Direta c/ Halteres</div><div class="ad">Cada lado independente.</div><a class="yt" href="https://www.youtube.com/results?search_query=rosca+direta+halteres+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Rosca Direta c/ Barra W</div><div class="ad">Mais confortável pro punho.</div><a class="yt" href="https://www.youtube.com/results?search_query=rosca+direta+barra+W+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Rosca Martelo c/ Halteres</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Pegada neutra, flexiona sem rotacionar o punho.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=rosca+martelo+halteres+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Rosca Martelo na Polia c/ Corda</div><div class="ad">Tensão constante.</div><a class="yt" href="https://www.youtube.com/results?search_query=rosca+martelo+polia+corda" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Rosca Zottman c/ Halteres</div><div class="ad">Sobe supinado, desce pronado.</div><a class="yt" href="https://www.youtube.com/results?search_query=rosca+zottman+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">7</div><div class="ex-info"><h3>Rosca Scott na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Execução</h4><p>Braços apoiados, desce controlado.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=rosca+scott+maquina+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Rosca Scott c/ Barra W no Banco</div><div class="ad">Banco Scott com barra livre.</div><a class="yt" href="https://www.youtube.com/results?search_query=rosca+scott+barra+W+banco+preacher" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Rosca Concentrada c/ Halter</div><div class="ad">Cotovelo na coxa, isola bíceps.</div><a class="yt" href="https://www.youtube.com/results?search_query=rosca+concentrada+halter+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">8</div><div class="ex-info"><h3>Drop set no último exercício <span style="color:var(--pink);font-size:.7rem;font-weight:700">NOVO</span></h3><div class="tags"><span class="tag tag-sets">📊 1 série</span><span class="tag tag-reps">15+ reps</span><span class="tag tag-rest">⏱ sem pausa</span><span class="tag tag-load">🏋️ reduzir 20-30%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Como funciona</h4><p>Perto da falha, reduza a carga em 20–30% e continue sem descanso longo.</p></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">9</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">10</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 7-10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">9</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Qua</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Abdominal na Polia (ajoelhado)</div><div class="ad">Ajoelhado na polia alta.</div><a class="yt" href="https://www.youtube.com/results?search_query=abdominal+polia+ajoelhado" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Crunch c/ Anilha no Peito</div><div class="ad">No solo com peso.</div><a class="yt" href="https://www.youtube.com/results?search_query=crunch+anilha+peso" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">10</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Qua</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 7-10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha Lateral c/ Peso</div><div class="ad">Trabalha oblíquos.</div><a class="yt" href="https://www.youtube.com/results?search_query=side+plank+weight+prancha+lateral" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha sem Peso (mais tempo)</div><div class="ad">60-90s.</div><a class="yt" href="https://www.youtube.com/results?search_query=plank+prancha+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">11</div><div class="ex-info"><h3>HIIT na Esteira (1×/sem)</h3><div class="tags"><span class="tag tag-sets">📊 1 série</span><span class="tag tag-reps">10 rounds</span><span class="tag tag-rest">⏱ —</span><span class="tag tag-load">🏋️ 30s / 60s</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Protocolo</h4><p>30s corrida a 8–10 km/h + 60s caminhada a 4–5 km/h.</p></div></div></div></div>
     </div>
   </div><!-- /fase-1 -->
@@ -1052,41 +1201,41 @@ table.data b{color:var(--text)}
     <div id="tab-f2-pernas" class="tab-content active">
       <div class="wtitle"><div class="icon">🦵</div><div><h2>Fase 2 — Pernas + Ombros</h2><div class="meta">Segunda e Quinta · super set + HIIT 2×/sem · Core na Segunda</div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">1</div><div class="ex-info"><h3>Hack Squat na Máquina <span style="color:var(--pink);font-size:.7rem;font-weight:700">NOVO</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 2 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Quadríceps + glúteos</p></div><div class="detail"><h4>📋 Execução</h4><p>Costas apoiadas no encosto, desce controlado até ~90° e sobe sem travar os joelhos.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=hack+squat+maquina+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Agachamento no Smith</div><a class="yt" href="https://www.youtube.com/results?search_query=agachamento+smith+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Leg Press 45°</div><a class="yt" href="https://www.youtube.com/results?search_query=leg+press+45+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">2</div><div class="ex-info"><h3>Cadeira Extensora</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cadeira+extensora+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">2</div><div class="ex-info"><h3>Cadeira Extensora</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cadeira+extensora+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Extensão na Polia c/ Tornozeleira</div><div class="ad">Polia baixa com tornozeleira.</div><a class="yt" href="https://www.youtube.com/results?search_query=extensao+perna+polia+tornozeleira" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Cadeira Extensora Unilateral</div><div class="ad">Uma perna por vez.</div><a class="yt" href="https://www.youtube.com/results?search_query=cadeira+extensora+unilateral" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">3</div><div class="ex-info"><h3>Stiff c/ Halteres <span style="color:var(--pink);font-size:.7rem;font-weight:700">NOVO</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎯 Músculo alvo</h4><p>Isquiotibiais + glúteos</p></div><div class="detail"><h4>📋 Execução</h4><p>Em pé, desce os halteres empurrando o quadril pra trás, coluna ereta; sobe contraindo o glúteo.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=stiff+halteres+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Mesa Flexora</div><a class="yt" href="https://www.youtube.com/results?search_query=mesa+flexora+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Cadeira Flexora Sentada</div><a class="yt" href="https://www.youtube.com/results?search_query=cadeira+flexora+sentada+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">4</div><div class="ex-info"><h3>Desenvolvimento c/ Halteres Sentado</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=desenvolvimento+halteres+sentado+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Desenvolvimento Arnold</div><a class="yt" href="https://www.youtube.com/results?search_query=desenvolvimento+arnold+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Desenvolvimento na Máquina</div><a class="yt" href="https://www.youtube.com/results?search_query=desenvolvimento+maquina+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">5</div><div class="ex-info"><h3>Super set: Elevação Lateral + Frontal <span style="color:var(--pink);font-size:.7rem;font-weight:700">NOVO</span></h3><div class="tags"><span class="tag tag-sets">📊 3+3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ sem pausa</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Como funciona</h4><p>Elevação lateral + elevação frontal em sequência, sem descanso entre os dois exercícios.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=elevacao+lateral+e+frontal+super+set" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Fazer separado</div><a class="yt" href="https://www.youtube.com/results?search_query=elevacao+lateral+halteres" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Elevação Lateral na Polia</div><a class="yt" href="https://www.youtube.com/results?search_query=elevacao+lateral+polia" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">7</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Seg</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Abdominal na Polia (ajoelhado)</div><div class="ad">Ajoelhado na polia alta.</div><a class="yt" href="https://www.youtube.com/results?search_query=abdominal+polia+ajoelhado" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Crunch c/ Anilha no Peito</div><div class="ad">No solo com peso.</div><a class="yt" href="https://www.youtube.com/results?search_query=crunch+anilha+peso" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">7</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Seg</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha Lateral c/ Peso</div><div class="ad">Trabalha oblíquos.</div><a class="yt" href="https://www.youtube.com/results?search_query=side+plank+weight+prancha+lateral" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha sem Peso (mais tempo)</div><div class="ad">60-90s.</div><a class="yt" href="https://www.youtube.com/results?search_query=plank+prancha+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">8</div><div class="ex-info"><h3>HIIT na Esteira (2×/sem)</h3><div class="tags"><span class="tag tag-sets">📊 1 série</span><span class="tag tag-reps">12 rounds</span><span class="tag tag-rest">⏱ —</span><span class="tag tag-load">🏋️ 30s / 60s</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Protocolo</h4><p>12 rounds: 30s corrida a 8–10 km/h + 60s caminhada a 4–5 km/h.</p></div></div></div></div>
     </div>
 
     <div id="tab-f2-peito" class="tab-content">
       <div class="wtitle"><div class="icon">💪</div><div><h2>Fase 2 — Peito + Tríceps</h2><div class="meta">Terça e Sábado · super set + HIIT 2×/sem · Core no Sábado</div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">1</div><div class="ex-info"><h3>Supino Reto na Máquina Articulada</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 2 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=supino+maquina+articulada+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">1</div><div class="ex-info"><h3>Supino Reto na Máquina Articulada</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 2 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=supino+maquina+articulada+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Supino Reto c/ Barra (banco plano)</div><div class="ad">Mais estabilização, amplitude total.</div><a class="yt" href="https://www.youtube.com/results?search_query=supino+reto+barra+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Supino c/ Halteres (banco plano)</div><div class="ad">Amplitude maior, independente.</div><a class="yt" href="https://www.youtube.com/results?search_query=supino+halteres+banco+plano" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">2</div><div class="ex-info"><h3>Super set: Crucifixo Voador + Crossover <span style="color:var(--pink);font-size:.7rem;font-weight:700">NOVO</span></h3><div class="tags"><span class="tag tag-sets">📊 3+3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ sem pausa</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Como funciona</h4><p>Crucifixo no voador + crossover em sequência, sem descanso entre os dois.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=crucifixo+voador+e+crossover" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Fazer separado</div><a class="yt" href="https://www.youtube.com/results?search_query=crucifixo+voador" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Crucifixo na Polia</div><a class="yt" href="https://www.youtube.com/results?search_query=crossover+polia+alta" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">3</div><div class="ex-info"><h3>Tríceps Pulley com Barra</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=triceps+pulley+barra+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">3</div><div class="ex-info"><h3>Tríceps Pulley com Barra</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=triceps+pulley+barra+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Tríceps no Banco (dips)</div><div class="ad">Peso corporal, peso extra no colo.</div><a class="yt" href="https://www.youtube.com/results?search_query=triceps+banco+dips+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Tríceps Testa c/ Barra W</div><div class="ad">Deitado, desce na testa.</div><a class="yt" href="https://www.youtube.com/results?search_query=triceps+testa+barra+W+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">4</div><div class="ex-info"><h3>Super set: Tríceps Corda + Tríceps Francês <span style="color:var(--pink);font-size:.7rem;font-weight:700">NOVO</span></h3><div class="tags"><span class="tag tag-sets">📊 3+3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ sem pausa</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Como funciona</h4><p>Tríceps corda + tríceps francês em sequência, sem descanso entre os dois.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=triceps+corda+e+frances" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Fazer separado</div><a class="yt" href="https://www.youtube.com/results?search_query=triceps+corda" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Tríceps Francês na Polia</div><a class="yt" href="https://www.youtube.com/results?search_query=triceps+frances+polia" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">5</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">5</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Sáb</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Abdominal na Polia (ajoelhado)</div><div class="ad">Ajoelhado na polia alta.</div><a class="yt" href="https://www.youtube.com/results?search_query=abdominal+polia+ajoelhado" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Crunch c/ Anilha no Peito</div><div class="ad">No solo com peso.</div><a class="yt" href="https://www.youtube.com/results?search_query=crunch+anilha+peso" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Sáb</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha Lateral c/ Peso</div><div class="ad">Trabalha oblíquos.</div><a class="yt" href="https://www.youtube.com/results?search_query=side+plank+weight+prancha+lateral" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha sem Peso (mais tempo)</div><div class="ad">60-90s.</div><a class="yt" href="https://www.youtube.com/results?search_query=plank+prancha+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">7</div><div class="ex-info"><h3>HIIT na Esteira (2×/sem)</h3><div class="tags"><span class="tag tag-sets">📊 1 série</span><span class="tag tag-reps">12 rounds</span><span class="tag tag-rest">⏱ —</span><span class="tag tag-load">🏋️ 30s / 60s</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Protocolo</h4><p>12 rounds: 30s corrida a 8–10 km/h + 60s caminhada a 4–5 km/h.</p></div></div></div></div>
     </div>
 
     <div id="tab-f2-costas" class="tab-content">
       <div class="wtitle"><div class="icon">🔙</div><div><h2>Fase 2 — Costas + Bíceps</h2><div class="meta">Quarta e Domingo · super set + HIIT 2×/sem · Core na Quarta</div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">1</div><div class="ex-info"><h3>Puxada Frontal</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 2 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=puxada+frontal+lat+pulldown+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">2</div><div class="ex-info"><h3>Remada Baixa com Triângulo</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=remada+baixa+triangulo+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">3</div><div class="ex-info"><h3>Crucifixo Invertido na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=crucifixo+invertido+reverse+peck+deck" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">4</div><div class="ex-info"><h3>Remada Convergente na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=remada+convergente+maquina+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">1</div><div class="ex-info"><h3>Puxada Frontal</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 2 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=puxada+frontal+lat+pulldown+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Barra Fixa (pegada pronada)</div><div class="ad">Versão com peso corporal.</div><a class="yt" href="https://www.youtube.com/results?search_query=barra+fixa+pronada+pull+up" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Puxada na Polia c/ Pegada Neutra</div><div class="ad">Menos estresse no cotovelo.</div><a class="yt" href="https://www.youtube.com/results?search_query=lat+pulldown+neutral+grip" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">2</div><div class="ex-info"><h3>Remada Baixa com Triângulo</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=remada+baixa+triangulo+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Remada Sentada na Máquina</div><div class="ad">Peito apoiado, mais estável.</div><a class="yt" href="https://www.youtube.com/results?search_query=remada+sentada+maquina+execucao" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Remada Curvada c/ Barra</div><div class="ad">Barra livre, tronco 45°. Exige técnica.</div><a class="yt" href="https://www.youtube.com/results?search_query=remada+curvada+barra+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">3</div><div class="ex-info"><h3>Crucifixo Invertido na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=crucifixo+invertido+reverse+peck+deck" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Crucifixo Inverso na Polia (cruzado)</div><div class="ad">Polias altas cruzando pra trás.</div><a class="yt" href="https://www.youtube.com/results?search_query=reverse+fly+cable+cruzado" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Face Pull na Polia c/ Corda</div><div class="ad">Puxa para a testa abrindo cotovelos.</div><a class="yt" href="https://www.youtube.com/results?search_query=face+pull+polia+corda+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">4</div><div class="ex-info"><h3>Remada Convergente na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min 30 s</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=remada+convergente+maquina+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Remada Unilateral c/ Halter (banco)</div><div class="ad">Joelho e mão no banco.</div><a class="yt" href="https://www.youtube.com/results?search_query=remada+unilateral+halter+banco" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Remada na Polia Baixa c/ Pegada Fechada</div><div class="ad">Mais estabilização.</div><a class="yt" href="https://www.youtube.com/results?search_query=remada+polia+baixa+pegada+fechada" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">5</div><div class="ex-info"><h3>Super set: Rosca Direta + Rosca Martelo <span style="color:var(--pink);font-size:.7rem;font-weight:700">NOVO</span></h3><div class="tags"><span class="tag tag-sets">📊 3+3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ sem pausa</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Como funciona</h4><p>Rosca direta + rosca martelo em sequência, sem descanso entre os dois.</p></div><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=rosca+direta+e+martelo+super+set" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Fazer separado</div><a class="yt" href="https://www.youtube.com/results?search_query=rosca+direta+halteres" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Rosca Martelo na Polia c/ Corda</div><a class="yt" href="https://www.youtube.com/results?search_query=rosca+martelo+polia+corda" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Rosca Scott na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=rosca+scott+maquina+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">7</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
-      <div class="ex"><div class="ex-header"><div class="ex-num">8</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">6</div><div class="ex-info"><h3>Rosca Scott na Máquina</h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">10-12 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-8%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=rosca+scott+maquina+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Rosca Scott c/ Barra W no Banco</div><div class="ad">Banco Scott com barra livre.</div><a class="yt" href="https://www.youtube.com/results?search_query=rosca+scott+barra+W+banco+preacher" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Rosca Concentrada c/ Halter</div><div class="ad">Cotovelo na coxa, isola bíceps.</div><a class="yt" href="https://www.youtube.com/results?search_query=rosca+concentrada+halter+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">7</div><div class="ex-info"><h3>Abdominal na Máquina <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Qua</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">12-15 reps</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ +5-10%</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=cable+crunch+abdominal+execucao" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Abdominal na Polia (ajoelhado)</div><div class="ad">Ajoelhado na polia alta.</div><a class="yt" href="https://www.youtube.com/results?search_query=abdominal+polia+ajoelhado" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Crunch c/ Anilha no Peito</div><div class="ad">No solo com peso.</div><a class="yt" href="https://www.youtube.com/results?search_query=crunch+anilha+peso" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
+      <div class="ex"><div class="ex-header"><div class="ex-num">8</div><div class="ex-info"><h3>Prancha c/ Peso <span style="color:var(--purple);font-size:.7rem;font-weight:700">CORE · Qua</span></h3><div class="tags"><span class="tag tag-sets">📊 3 séries</span><span class="tag tag-reps">30-45s</span><span class="tag tag-rest">⏱ 1 min</span><span class="tag tag-load">🏋️ 10 kg</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>🎬 Como fazer</h4><a class="yt" href="https://www.youtube.com/results?search_query=weighted+plank+prancha+peso" target="_blank">▶ Ver no YouTube</a></div><div class="detail"><h4>🔄 Alternativas (se a máquina estiver ocupada)</h4><div class="alts"><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha Lateral c/ Peso</div><div class="ad">Trabalha oblíquos.</div><a class="yt" href="https://www.youtube.com/results?search_query=side+plank+weight+prancha+lateral" target="_blank">▶ YouTube</a></div><div class="alt"><div class="al">Alternativa</div><div class="an">Prancha sem Peso (mais tempo)</div><div class="ad">60-90s.</div><a class="yt" href="https://www.youtube.com/results?search_query=plank+prancha+execucao" target="_blank">▶ YouTube</a></div></div></div></div></div></div>
       <div class="ex"><div class="ex-header"><div class="ex-num">9</div><div class="ex-info"><h3>HIIT na Esteira (2×/sem)</h3><div class="tags"><span class="tag tag-sets">📊 1 série</span><span class="tag tag-reps">12 rounds</span><span class="tag tag-rest">⏱ —</span><span class="tag tag-load">🏋️ 30s / 60s</span></div></div><span class="ex-arrow">▼</span></div><div class="ex-body"><div class="ex-inner"><div class="detail"><h4>📋 Protocolo</h4><p>12 rounds: 30s corrida a 8–10 km/h + 60s caminhada a 4–5 km/h.</p></div></div></div></div>
     </div>
   </div><!-- /fase-2 -->
 
-  <div class="section-head"><span class="bar"></span><h2>Orientações de Execução</h2><span class="count">11 regras</span></div>
+  <div class="section-head" id="orientacoes"><span class="bar"></span><h2>Orientações de Execução</h2><span class="count">11 regras</span></div>
   <div class="guidelines">
     <div class="gcard"><div class="gi">🎯</div><h4>RIR 0-1</h4><p>Para quando sentir que faria só mais 1 rep com técnica perfeita (RIR 1). No último exercício de cada grupo, pode ir até a falha (RIR 0).</p></div>
     <div class="gcard"><div class="gi">⏱️</div><h4>Pausas</h4><p>2 min exercícios grandes, 1 min 30 s médios, 1 min isolados e core. Indicadas ao lado de cada exercício.</p></div>
@@ -1109,30 +1258,7 @@ table.data b{color:var(--text)}
     </div>
   </div>
 
-  <div class="section-head"><span class="bar"></span><h2>HIIT</h2><span class="count">fase 1 · 13/10</span></div>
-  <div class="hiit">
-    <h3>🔥 Protocolo HIIT na Esteira</h3>
-    <p><b>Início:</b> fase 1 (13/10 a 26/10), 1×/semana substituindo uma caminhada<br>
-    <b>Protocolo:</b> 30s corrida a 8–10 km/h + 60s caminhada a 4–5 km/h, 10 rounds (~10 min)<br>
-    <b>Inclinação:</b> 0% padrão (1–2% opcional para mais intensidade)<br>
-    <b>Fase 2 (27/10 a 09/11):</b> 2×/semana, 12 rounds</p>
-  </div>
-
-  <div class="section-head"><span class="bar"></span><h2>Evolução por Fase</h2><span class="count">3 fases</span></div>
-  <div class="prog"><h3>📍 Fase atual · Intermediária (29/09 a 12/10)</h3>
-    <div class="step"><span class="arrow">→</span><p>Consolida técnica e volume; core com peso 3×/sem; sem HIIT.</p></div>
-    <div class="step"><span class="arrow">→</span><p><b>Carga:</b> +8–12% (ombros/isolados +5–8%); RIR 1 (0 no último do grupo).</p></div>
-  </div>
-  <div class="prog"><h3>📍 Fase 1 · Intermediária-Avançada (13/10 a 26/10)</h3>
-    <div class="step"><span class="arrow">→</span><p>Desenvolvimento na máquina → halteres sentado; considerar Hack Squat; drop set no último exercício.</p></div>
-    <div class="step"><span class="arrow">→</span><p><b>HIIT:</b> 1×/semana, 10 rounds · <b>Carga:</b> +5–10% adicional.</p></div>
-  </div>
-  <div class="prog"><h3>📍 Fase 2 · Avançada (27/10 a 09/11)</h3>
-    <div class="step"><span class="arrow">→</span><p>Leg Press → Hack Squat; Stiff c/ halteres; super sets; HIIT 2×/semana, 12 rounds.</p></div>
-    <div class="step"><span class="arrow">→</span><p><b>Carga:</b> +5–10% adicional; RIR 0 no último de cada grupo.</p></div>
-  </div>
-
-  <div class="section-head"><span class="bar"></span><h2>Plano Alimentar</h2><span class="count">1.850 kcal</span></div>
+  <div class="section-head" id="alimentar"><span class="bar"></span><h2>Plano Alimentar</h2><span class="count">1.850 kcal</span></div>
   <div class="alert">
     <div class="aico">🥩</div>
     <div>
@@ -1204,7 +1330,7 @@ table.data b{color:var(--text)}
     </table>
   </div>
 
-  <div class="section-head"><span class="bar"></span><h2>Plano de Aceleração</h2><span class="count">opcional</span></div>
+  <div class="section-head" id="aceleracao"><span class="bar"></span><h2>Plano de Aceleração</h2><span class="count">opcional</span></div>
   <div class="alert">
     <div class="aico">⚡</div>
     <div>
@@ -1239,7 +1365,7 @@ table.data b{color:var(--text)}
     </div>
   </div>
 
-  <div class="section-head"><span class="bar"></span><h2>Glossário</h2><span class="count">termos técnicos</span></div>
+  <div class="section-head" id="glossario"><span class="bar"></span><h2>Glossário</h2><span class="count">termos técnicos</span></div>
   <div class="data-wrap">
     <table class="data">
       <thead><tr><th>Termo</th><th>Significado</th></tr></thead>
@@ -1247,26 +1373,26 @@ table.data b{color:var(--text)}
         <tr><td>RIR</td><td>Repetições em reserva: quantas ainda caberiam com técnica adequada.</td></tr>
         <tr><td>RIR 0</td><td>Falha técnica: não cabe mais uma repetição segura.</td></tr>
         <tr><td>RIR 1</td><td>Uma repetição antes da falha.</td></tr>
-        <tr><td>HIIT</td><td>Intervalos de alta intensidade com recuperação.</td></tr>
-        <tr><td>LISS</td><td>Cardio contínuo de baixa intensidade.</td></tr>
+        <tr><td>HIIT</td><td>Intervalos de alta intensidade. Aqui: 30s corrida a 8–10 km/h + 60s caminhada a 4–5 km/h.</td></tr>
+        <tr><td>LISS</td><td>Cardio contínuo moderado, ex.: 40 min de caminhada a 4–5 km/h.</td></tr>
         <tr><td>NEAT</td><td>Gasto de atividades que não são treino.</td></tr>
         <tr><td>EPOC</td><td>Gasto energético elevado após o exercício.</td></tr>
-        <tr><td>TMB</td><td>Energia para funções vitais em repouso.</td></tr>
-        <tr><td>TDEE</td><td>Gasto total diário: TMB, atividade, treino e digestão.</td></tr>
+        <tr><td>TMB</td><td>Energia mínima para funções vitais em repouso. Crys: ~2.002 kcal/dia.</td></tr>
+        <tr><td>TDEE</td><td>Gasto total diário: TMB + atividade + treino + digestão. Crys: ~2.753 kcal/dia.</td></tr>
         <tr><td>EMG</td><td>Registro da ativação elétrica muscular.</td></tr>
-        <tr><td>IMC</td><td>Relação entre peso e altura; indicador de triagem.</td></tr>
+        <tr><td>IMC</td><td>Peso/altura²; triagem, não separa músculo de gordura. Crys: 32,19.</td></tr>
         <tr><td>Cutting</td><td>Fase de perda de gordura preservando massa magra.</td></tr>
-        <tr><td>Déficit calórico</td><td>Consumir menos energia do que se gasta.</td></tr>
+        <tr><td>Déficit calórico</td><td>Consumir menos energia do que se gasta. TDEE 2.753 − meta 1.850 ≈ 903 kcal/dia.</td></tr>
         <tr><td>Massa magra</td><td>Tudo que não é gordura.</td></tr>
         <tr><td>Hipertrofia</td><td>Aumento do tamanho das fibras musculares.</td></tr>
         <tr><td>Cadência</td><td>Tempo de cada parte da repetição.</td></tr>
         <tr><td>Double progression</td><td>Subir reps e depois carga, reconstruindo reps.</td></tr>
-        <tr><td>Volume semanal</td><td>Séries efetivas por músculo por semana.</td></tr>
-        <tr><td>Drop sets</td><td>Reduzir carga e continuar com pouco descanso.</td></tr>
-        <tr><td>Super sets</td><td>Dois exercícios em sequência com descanso reduzido.</td></tr>
-        <tr><td>Creatina</td><td>Suplemento que aumenta energia disponível para esforços repetidos.</td></tr>
-        <tr><td>Whey protein</td><td>Proteína do leite para facilitar a meta proteica.</td></tr>
-        <tr><td>Scoop</td><td>Medida do dosador; aqui, 20 g de whey.</td></tr>
+        <tr><td>Volume semanal</td><td>Séries efetivas por músculo/semana. Ex.: 3 séries × 3 exercícios × 2 dias = 18.</td></tr>
+        <tr><td>Drop sets</td><td>Perto da falha, reduz 20–30% da carga e continua sem descanso longo.</td></tr>
+        <tr><td>Super sets</td><td>Dois exercícios em sequência com 0 de pausa entre eles.</td></tr>
+        <tr><td>Creatina</td><td>Suplemento que aumenta energia disponível para esforços repetidos. Dose: 5 g/dia.</td></tr>
+        <tr><td>Whey protein</td><td>Proteína do leite para completar a meta. Produto: 10 g de proteína por scoop de 20 g.</td></tr>
+        <tr><td>Scoop</td><td>Medida do dosador: 20 g de pó; não é colher de sopa.</td></tr>
         <tr><td>SNC</td><td>Sistema Nervoso Central.</td></tr>
         <tr><td>GH</td><td>Hormônio do crescimento.</td></tr>
         <tr><td>Cortisol</td><td>Hormônio envolvido na resposta ao estresse.</td></tr>
@@ -1275,29 +1401,29 @@ table.data b{color:var(--text)}
     </table>
   </div>
 
-  <div class="section-head"><span class="bar"></span><h2>Fontes Científicas</h2><span class="count">referências</span></div>
+  <div class="section-head" id="fontes"><span class="bar"></span><h2>Fontes Científicas</h2><span class="count">referências</span></div>
   <div class="data-wrap">
     <table class="data">
       <thead><tr><th>Fonte</th><th>Tema citado</th></tr></thead>
       <tbody>
-        <tr><td>ACSM Position Stand (2026)</td><td>RT Prescription for Muscle Function, Hypertrophy, Physical Performance</td></tr>
+        <tr><td>ACSM Position Stand (2026)</td><td>Prescrição de treino resistido, hipertrofia e performance.</td></tr>
         <tr><td>Cumming et al. (2024) — Journal of Physiology</td><td>Muscle memory e permanência de miomúcleos</td></tr>
         <tr><td>Helms et al. (2022) — Sports Medicine</td><td>Volume de treino durante restrição calórica</td></tr>
-        <tr><td>Schoenfeld et al. (2017)</td><td>Meta-análise de cargas baixas versus altas</td></tr>
+        <tr><td>Schoenfeld et al. (2017)</td><td>Cargas baixas versus altas no treino resistido.</td></tr>
         <tr><td>Bayesian network meta-analysis (BJSM, 2023)</td><td>Prescrição de treino resistido</td></tr>
         <tr><td>Frontiers (2024)</td><td>Intervalos de descanso</td></tr>
         <tr><td>Schoenfeld meta-regression (2024)</td><td>Proximidade da falha</td></tr>
         <tr><td>Meta-regression (2025)</td><td>Volume por sessão</td></tr>
         <tr><td>BMC Sports Science (2024)</td><td>Pesos livres versus máquinas</td></tr>
-        <tr><td>Frontiers in Nutrition (2025)</td><td>Exercício durante restrição calórica</td></tr>
-        <tr><td>RCT (2023)</td><td>Exercício abdominal + cardio</td></tr>
-        <tr><td>Meta-análises (2024–2025)</td><td>HIIT versus LISS</td></tr>
-        <tr><td>Levine et al. — Science (1999)</td><td>NEAT</td></tr>
-        <tr><td>Spiegel et al. — Lancet (1999)</td><td>Sono, fome e glicose</td></tr>
+        <tr><td>Frontiers in Nutrition (2025)</td><td>Modalidades de exercício em restrição calórica.</td></tr>
+        <tr><td>RCT (2023)</td><td>Exercício abdominal associado a cardio.</td></tr>
+        <tr><td>Meta-análises (2024–2025)</td><td>HIIT versus LISS para gordura visceral.</td></tr>
+        <tr><td>Levine et al. — Science (1999)</td><td>NEAT e gasto não relacionado ao exercício.</td></tr>
+        <tr><td>Spiegel et al. — Lancet (1999)</td><td>Sono, fome e tolerância à glicose.</td></tr>
         <tr><td>Warren et al. — JISSN (2016)</td><td>Cafeína e desempenho</td></tr>
         <tr><td>Astorino et al. (2009)</td><td>Cafeína e oxidação de gordura</td></tr>
         <tr><td>Burgess et al. (2017)</td><td>HIIT e EPOC</td></tr>
-        <tr><td>ISSN Position Stand</td><td>Timing de carboidratos</td></tr>
+        <tr><td>ISSN Position Stand</td><td>Distribuição de carboidratos ao redor do treino.</td></tr>
         <tr><td>Hursel et al. (2009)</td><td>Catequinas e cafeína</td></tr>
         <tr><td>Cochrane Review</td><td>Catequinas sem cafeína</td></tr>
       </tbody>
@@ -1311,33 +1437,35 @@ table.data b{color:var(--text)}
   </div>
 </div>
 
+<button class="to-top" id="toTop" aria-label="Voltar ao topo">↑</button>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
   // ---------- phase tabs (fase atual / fase 1 / fase 2) ----------
-  var PHASE_NAMES = { 'fase-atual': 'Fase Atual', 'fase-1': 'Fase 1', 'fase-2': 'Fase 2' };
+  let PHASE_NAMES = { 'fase-atual': 'Fase Atual · 1/3', 'fase-1': 'Fase 1 · 2/3', 'fase-2': 'Fase 2 · 3/3' };
 
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
 
   function setTodayDate() {
-    var el = document.getElementById('tbDate');
+    let el = document.getElementById('tbDate');
     if (!el) return;
-    var now = new Date();
+    let now = new Date();
     el.textContent = '📅 ' + pad2(now.getDate()) + '/' + pad2(now.getMonth() + 1) + '/' + now.getFullYear();
   }
 
   function updateBadge(phaseId) {
-    var el = document.getElementById('tbPhase');
+    let el = document.getElementById('tbPhase');
     if (el) el.textContent = PHASE_NAMES[phaseId] || 'Fase Atual';
   }
 
   function activatePhase(phaseId) {
     document.querySelectorAll('.phase-panel').forEach(function (p) { p.classList.remove('active'); });
     document.querySelectorAll('[data-phase]').forEach(function (b) { b.classList.remove('active'); });
-    var panel = document.getElementById(phaseId);
+    let panel = document.getElementById(phaseId);
     if (panel) panel.classList.add('active');
     document.querySelectorAll('[data-phase="' + phaseId + '"]').forEach(function (b) { b.classList.add('active'); });
-    var first = panel.querySelector('.tab-content');
+    let first = panel.querySelector('.tab-content');
     if (first) activateTab(first.id, panel);
     updateBadge(phaseId);
   }
@@ -1348,7 +1476,7 @@ document.addEventListener('DOMContentLoaded', function () {
     scope.querySelectorAll('.tab-content').forEach(function (t) { t.classList.remove('active'); });
     scope.querySelectorAll('.wtab').forEach(function (b) { b.classList.remove('active'); });
     if (tabId) {
-      var target = scope.querySelector('#' + tabId);
+      let target = scope.querySelector('#' + tabId);
       if (target) target.classList.add('active');
       scope.querySelectorAll('.wtab[data-tab="' + tabId + '"]').forEach(function (b) { b.classList.add('active'); });
     }
@@ -1364,8 +1492,20 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.wtab[data-tab]').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
-      var panel = btn.closest('.phase-panel');
+      let panel = btn.closest('.phase-panel');
       activateTab(btn.getAttribute('data-tab'), panel);
+    });
+  });
+
+  // ---------- schedule days clickable (jump to workout) ----------
+  document.querySelectorAll('.day[data-tab]').forEach(function (day) {
+    day.addEventListener('click', function () {
+      let phaseId = day.getAttribute('data-phase');
+      let tabId = day.getAttribute('data-tab');
+      activatePhase(phaseId);
+      activateTab(tabId, document.getElementById(phaseId));
+      let treinos = document.getElementById('treinos');
+      if (treinos) treinos.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 
@@ -1375,45 +1515,71 @@ document.addEventListener('DOMContentLoaded', function () {
   //   fase-1    : 13/10/2026 a 26/10/2026
   //   fase-2    : 27/10/2026 a 09/11/2026
   function parseYMD(s) {
-    var p = s.split('-');
+    let p = s.split('-');
     return new Date(+p[0], +p[1] - 1, +p[2]); // meia-noite local, sem fuso
   }
   function phaseForToday() {
-    var now = new Date();
-    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    var phases = [
+    let now = new Date();
+    let today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    let phases = [
       { id: 'fase-atual', start: parseYMD('2026-09-29'), end: parseYMD('2026-10-12') },
       { id: 'fase-1', start: parseYMD('2026-10-13'), end: parseYMD('2026-10-26') },
       { id: 'fase-2', start: parseYMD('2026-10-27'), end: parseYMD('2026-11-09') }
     ];
-    for (var i = 0; i < phases.length; i++) {
+    for (let i = 0; i < phases.length; i++) {
       if (today >= phases[i].start && today <= phases[i].end) return phases[i].id;
     }
     if (today < phases[0].start) return 'fase-atual'; // antes do plano → fase inicial
     return 'fase-2'; // depois do plano → última fase
   }
+  function markTodayPhase(phaseId) {
+    document.querySelectorAll('.ptab[data-phase="' + phaseId + '"]').forEach(function (btn) {
+      if (!btn.querySelector('.today-flag')) {
+        let flag = document.createElement('em');
+        flag.className = 'today-flag';
+        flag.textContent = 'HOJE';
+        btn.appendChild(flag);
+      }
+    });
+  }
+
+  let todayPhaseId = phaseForToday();
   setTodayDate();
-  activatePhase(phaseForToday());
+  markTodayPhase(todayPhaseId);
+  activatePhase(todayPhaseId);
 
   // ---------- exercise accordion ----------
   document.querySelectorAll('.ex').forEach(function (ex) {
-    var header = ex.querySelector('.ex-header');
+    let header = ex.querySelector('.ex-header');
     if (header) {
+      header.setAttribute('role', 'button');
+      header.setAttribute('tabindex', '0');
+      header.setAttribute('aria-expanded', 'false');
+      function toggleEx() {
+        let isOpen = ex.classList.toggle('open');
+        header.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
       header.addEventListener('click', function (e) {
         e.preventDefault();
-        ex.classList.toggle('open');
+        toggleEx();
+      });
+      header.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault();
+          toggleEx();
+        }
       });
     }
   });
 
   // ---------- animate volume bars on scroll ----------
-  var bars = document.querySelectorAll('.bar-fill');
+  let bars = document.querySelectorAll('.bar-fill');
   if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
+    let io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) {
-          var el = en.target;
-          var w = el.getAttribute('data-w') || '0';
+          let el = en.target;
+          let w = el.getAttribute('data-w') || '0';
           el.style.width = w + '%';
           io.unobserve(el);
         }
@@ -1431,25 +1597,51 @@ document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
   // ---------- scroll progress + scroll parallax ----------
-  var progress = document.getElementById('scrollProgress');
+  let progress = document.getElementById('scrollProgress');
   function onScroll() {
-    var st = window.scrollY || document.documentElement.scrollTop;
-    var max = document.documentElement.scrollHeight - window.innerHeight;
+    let st = window.scrollY || document.documentElement.scrollTop;
+    let max = document.documentElement.scrollHeight - window.innerHeight;
     if (progress) progress.style.width = (max > 0 ? (st / max) * 100 : 0) + '%';
 
     document.querySelectorAll('[data-parallax]').forEach(function (el) {
-      var speed = parseFloat(el.getAttribute('data-parallax')) || 0;
-      var shift = Math.min(st * speed, 48);
+      let speed = parseFloat(el.getAttribute('data-parallax')) || 0;
+      let shift = Math.min(st * speed, 48);
       el.style.transform = 'translateY(' + shift.toFixed(1) + 'px)';
     });
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
+  // ---------- back to top ----------
+  const toTop = document.getElementById('toTop');
+  if (toTop) {
+    window.addEventListener('scroll', function () {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      toTop.classList.toggle('show', y > 600);
+    }, { passive: true });
+    toTop.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // ---------- theme toggle ----------
+  const themeToggle = document.getElementById('themeToggle');
+  function currentTheme() { return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
+  function syncThemeIcon() { if (themeToggle) themeToggle.textContent = currentTheme() === 'light' ? '☀️' : '🌙'; }
+  syncThemeIcon();
+  if (themeToggle) {
+    themeToggle.addEventListener('click', function () {
+      const next = currentTheme() === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      syncThemeIcon();
+    });
+  }
+
   // ---------- mouse tracking ----------
-  var mx = window.innerWidth / 2, my = window.innerHeight / 2;
-  var tx = mx, ty = my;
-  var glow = document.getElementById('cursorGlow');
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  let tx = mx, ty = my;
+  let glow = document.getElementById('cursorGlow');
   window.addEventListener('mousemove', function (e) {
     mx = e.clientX; my = e.clientY;
     if (glow) { glow.classList.add('on'); glow.style.left = mx + 'px'; glow.style.top = my + 'px'; }
@@ -1457,16 +1649,16 @@ document.addEventListener('DOMContentLoaded', function () {
   document.body.addEventListener('mouseleave', function () { if (glow) glow.classList.remove('on'); });
 
   // ---------- particle field (neon dust) ----------
-  var canvas = document.getElementById('particles');
-  var ctx = canvas.getContext('2d');
-  var W, H, parts = [];
-  var COLORS = ['0,255,157', '0,229,255', '255,46,196', '180,85,255'];
+  let canvas = document.getElementById('particles');
+  let ctx = canvas.getContext('2d');
+  let W, H, parts = [];
+  let COLORS = ['0,255,157', '0,229,255', '255,46,196', '180,85,255'];
   function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    var n = Math.min(80, Math.floor(window.innerWidth / 16));
+    let n = Math.min(80, Math.floor(window.innerWidth / 16));
     parts = [];
-    for (var i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++) {
       parts.push({
         x: Math.random() * W,
         y: Math.random() * H,
@@ -1481,24 +1673,25 @@ document.addEventListener('DOMContentLoaded', function () {
   resize();
   window.addEventListener('resize', resize);
 
-  var t = 0;
-  var orbs = {
+  let t = 0;
+  let orbs = {
     g: document.querySelector('.orb.g'),
     c: document.querySelector('.orb.c'),
     p: document.querySelector('.orb.p')
   };
 
   function loop() {
+    if (!running) return;
     t += 0.008;
     tx += (mx - tx) * 0.06;
     ty += (my - ty) * 0.06;
 
     ctx.clearRect(0, 0, W, H);
-    for (var i = 0; i < parts.length; i++) {
-      var p = parts[i];
+    for (let i = 0; i < parts.length; i++) {
+      let p = parts[i];
       p.y -= p.s;
       if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
-      var px = p.x + (tx - W / 2) * (p.d * 0.02);
+      let px = p.x + (tx - W / 2) * (p.d * 0.02);
       ctx.beginPath();
       ctx.arc(px, p.y, p.r, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(' + p.c + ',' + (p.a + Math.sin(t + i) * 0.12) + ')';
@@ -1512,15 +1705,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     requestAnimationFrame(loop);
   }
+  let running = true;
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      running = false;
+    } else if (!running) {
+      running = true;
+      loop();
+    }
+  });
   loop();
 
   // ---------- reveal on scroll ----------
-  var revealSel = '.stats .stat, .section-head, .schedule .day, .alert, .volume-wrap, .workout-tabs, .guidelines .gcard, .hiit, .prog, .footer';
-  var revealEls = document.querySelectorAll(revealSel);
+  let revealSel = '.stats .stat, .section-head, .schedule .day, .alert, .volume-wrap, .data-wrap, .workout-tabs, .phase-tabs, .guidelines .gcard, .prog, .footer';
+  let revealEls = document.querySelectorAll(revealSel);
   revealEls.forEach(function (el) { el.classList.add('reveal'); });
 
   if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
+    let io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) {
           en.target.classList.add('visible');
@@ -1553,9 +1755,9 @@ document.addEventListener('DOMContentLoaded', function () {
       card.style.transitionDelay = '0ms';
     });
     card.addEventListener('mousemove', function (e) {
-      var r = card.getBoundingClientRect();
-      var px = (e.clientX - r.left) / r.width - 0.5;
-      var py = (e.clientY - r.top) / r.height - 0.5;
+      let r = card.getBoundingClientRect();
+      let px = (e.clientX - r.left) / r.width - 0.5;
+      let py = (e.clientY - r.top) / r.height - 0.5;
       card.style.transform = 'perspective(700px) rotateX(' + (-py * 6).toFixed(2) + 'deg) rotateY(' + (px * 8).toFixed(2) + 'deg) translateY(-4px)';
     });
     card.addEventListener('mouseleave', function () {
@@ -1563,6 +1765,49 @@ document.addEventListener('DOMContentLoaded', function () {
       card.style.transform = '';
       setTimeout(function () { card.style.transition = ''; }, 400);
     });
+  });
+})();
+</script>
+
+<script>
+(function () {
+  'use strict';
+
+  const hamburger = document.getElementById('hamburger');
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('menuBackdrop');
+  const sidebarClose = document.getElementById('sidebarClose');
+
+  function setMenu(open) {
+    if (!hamburger || !sidebar || !backdrop) return;
+    hamburger.classList.toggle('open', open);
+    sidebar.classList.toggle('open', open);
+    backdrop.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    sidebar.setAttribute('aria-hidden', open ? 'false' : 'true');
+    backdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  function closeMenu() { setMenu(false); }
+
+  if (hamburger) {
+    hamburger.addEventListener('click', function () {
+      setMenu(!sidebar.classList.contains('open'));
+    });
+  }
+  if (backdrop) backdrop.addEventListener('click', closeMenu);
+  if (sidebarClose) sidebarClose.addEventListener('click', closeMenu);
+
+  if (sidebar) {
+    sidebar.querySelectorAll('.side-link').forEach(function (link) {
+      link.addEventListener('click', closeMenu);
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) closeMenu();
   });
 })();
 </script>
