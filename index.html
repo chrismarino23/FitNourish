@@ -83,6 +83,9 @@ body{
 }
 .nav-tabs button:hover{color:var(--text);background:var(--panel)}
 .nav-tabs button.active{color:#04110d;background:linear-gradient(135deg,var(--neon),var(--cyan));box-shadow:0 0 20px rgba(0,255,157,.4);font-weight:700}
+.today-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;border:1px solid var(--border-strong);background:var(--panel-2);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.8rem;letter-spacing:.5px;white-space:nowrap}
+.today-badge .tb-date{color:var(--dim)}
+.today-badge .tb-phase{color:var(--neon);text-shadow:0 0 12px rgba(0,255,157,.4)}
 
 /* ---------- hero ---------- */
 .hero{padding:70px 0 46px;text-align:center;position:relative}
@@ -338,6 +341,7 @@ table.data b{color:var(--text)}
   .ex-inner{padding:2px 14px 16px 16px}
   .alts{grid-template-columns:1fr}
   .nav-inner{flex-direction:column;align-items:stretch}
+  .today-badge{justify-content:center}
   .wtab{flex:1 1 45%}
   table.data th,table.data td{padding:10px 12px;font-size:.78rem}
 }
@@ -353,6 +357,7 @@ table.data b{color:var(--text)}
 <nav class="nav">
   <div class="nav-inner">
     <div class="brand"><div class="bolt">⚡</div><span class="grad">FitNourish Pro</span></div>
+    <div class="today-badge" id="todayBadge"><span class="tb-date" id="tbDate">📅 --/--/----</span><span class="tb-phase" id="tbPhase">Fase Atual</span></div>
     <div class="nav-tabs" id="navTabs">
       <button class="active" data-phase="fase-atual">📍 Atual</button>
       <button data-phase="fase-1">📍 Fase 1</button>
@@ -1310,6 +1315,22 @@ table.data b{color:var(--text)}
 document.addEventListener('DOMContentLoaded', function () {
 
   // ---------- phase tabs (fase atual / fase 1 / fase 2) ----------
+  var PHASE_NAMES = { 'fase-atual': 'Fase Atual', 'fase-1': 'Fase 1', 'fase-2': 'Fase 2' };
+
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  function setTodayDate() {
+    var el = document.getElementById('tbDate');
+    if (!el) return;
+    var now = new Date();
+    el.textContent = '📅 ' + pad2(now.getDate()) + '/' + pad2(now.getMonth() + 1) + '/' + now.getFullYear();
+  }
+
+  function updateBadge(phaseId) {
+    var el = document.getElementById('tbPhase');
+    if (el) el.textContent = PHASE_NAMES[phaseId] || 'Fase Atual';
+  }
+
   function activatePhase(phaseId) {
     document.querySelectorAll('.phase-panel').forEach(function (p) { p.classList.remove('active'); });
     document.querySelectorAll('[data-phase]').forEach(function (b) { b.classList.remove('active'); });
@@ -1318,6 +1339,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('[data-phase="' + phaseId + '"]').forEach(function (b) { b.classList.add('active'); });
     var first = panel.querySelector('.tab-content');
     if (first) activateTab(first.id, panel);
+    updateBadge(phaseId);
   }
 
   // ---------- muscle tabs (scoped to the active phase) ----------
@@ -1346,6 +1368,32 @@ document.addEventListener('DOMContentLoaded', function () {
       activateTab(btn.getAttribute('data-tab'), panel);
     });
   });
+
+  // ---------- auto-select phase by current date ----------
+  // Date ranges (formato ISO yyyy-mm-dd, edite aqui quando os períodos mudarem):
+  //   fase-atual: 29/09/2026 a 12/10/2026
+  //   fase-1    : 13/10/2026 a 26/10/2026
+  //   fase-2    : 27/10/2026 a 09/11/2026
+  function parseYMD(s) {
+    var p = s.split('-');
+    return new Date(+p[0], +p[1] - 1, +p[2]); // meia-noite local, sem fuso
+  }
+  function phaseForToday() {
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var phases = [
+      { id: 'fase-atual', start: parseYMD('2026-09-29'), end: parseYMD('2026-10-12') },
+      { id: 'fase-1', start: parseYMD('2026-10-13'), end: parseYMD('2026-10-26') },
+      { id: 'fase-2', start: parseYMD('2026-10-27'), end: parseYMD('2026-11-09') }
+    ];
+    for (var i = 0; i < phases.length; i++) {
+      if (today >= phases[i].start && today <= phases[i].end) return phases[i].id;
+    }
+    if (today < phases[0].start) return 'fase-atual'; // antes do plano → fase inicial
+    return 'fase-2'; // depois do plano → última fase
+  }
+  setTodayDate();
+  activatePhase(phaseForToday());
 
   // ---------- exercise accordion ----------
   document.querySelectorAll('.ex').forEach(function (ex) {
