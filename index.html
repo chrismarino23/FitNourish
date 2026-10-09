@@ -401,6 +401,24 @@ table.volume .sets{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(-
 .alt .ad{font-size:.74rem;color:var(--dim);margin-top:2px}
 .alt .yt{font-size:.7rem;padding:5px 11px;margin-top:6px}
 
+/* ---------- marcar exercício como DONE ---------- */
+.ex-done-overlay{position:absolute;inset:0;z-index:6;display:none;place-items:center;pointer-events:none}
+.ex.done .ex-done-overlay{display:grid}
+.ex-done-overlay .ck{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;
+  font-size:2.5rem;font-weight:800;line-height:1;color:#06160e;
+  background:var(--neon);box-shadow:0 0 0 6px rgba(0,255,157,.22),0 0 46px rgba(0,255,157,.65)}
+.ex.done .ex-header,
+.ex.done .ex-body{opacity:.3;filter:saturate(.4)}
+.ex.done:hover{transform:none;box-shadow:none;border-color:var(--border)}
+.ex-done-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:6px;
+  padding:14px 18px;border-radius:12px;border:1px solid color-mix(in srgb,var(--neon) 55%,transparent);
+  background:rgba(0,255,157,.12);color:var(--neon);font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:1.02rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:.25s}
+.ex-done-btn:hover{background:rgba(0,255,157,.24);box-shadow:0 0 22px rgba(0,255,157,.35);transform:translateY(-1px)}
+.ex-done-btn:active{transform:scale(.98)}
+.ex-done-btn.undo{border-color:color-mix(in srgb,var(--amber) 55%,transparent);background:rgba(255,214,10,.12);color:var(--amber)}
+.ex-done-btn.undo:hover{background:rgba(255,214,10,.22);box-shadow:0 0 22px rgba(255,214,10,.3)}
+
 /* ---------- guidelines ---------- */
 .guidelines{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
 .gcard{border-radius:16px;padding:20px;background:var(--panel);border:1px solid var(--border);transition:.3s;position:relative;overflow:hidden}
@@ -1664,6 +1682,7 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   let currentDay = null;
+  let currentPhaseId = null;
 
   // captura o dia da semana de hoje (getDay(): 0=Dom, 1=Seg ... 6=Sáb)
   function getTodayDayId() {
@@ -1718,9 +1737,30 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  function resetAllDone() {
+    document.querySelectorAll('.ex').forEach(function (ex) {
+      ex.classList.remove('done');
+      ex.classList.remove('open');
+      let header = ex.querySelector('.ex-header');
+      let body = ex.querySelector('.ex-body');
+      if (header) header.setAttribute('aria-expanded', 'false');
+      if (body) {
+        body.setAttribute('aria-hidden', 'true');
+        body.toggleAttribute('inert', true);
+        body.style.maxHeight = '0px';
+      }
+      let btn = ex.querySelector('.ex-done-btn');
+      if (btn) {
+        btn.classList.remove('undo');
+        btn.innerHTML = '✓ Concluir exercício';
+      }
+    });
+  }
+
   function activateDay(dayId, panel) {
     panel = panel || activePhasePanel();
     if (!panel) return;
+    if (dayId !== currentDay) resetAllDone();
     currentDay = dayId;
     let day = DAY_MAP[dayId] || DAY_MAP.seg;
     let prefix = tabPrefix(panel);
@@ -1741,6 +1781,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function activatePhase(phaseId) {
+    if (phaseId !== currentPhaseId) resetAllDone();
+    currentPhaseId = phaseId;
     document.querySelectorAll('.phase-panel').forEach(function (p) { p.classList.remove('active'); });
     document.querySelectorAll('[data-phase]').forEach(function (b) { b.classList.remove('active'); });
     let panel = document.getElementById(phaseId);
@@ -1862,6 +1904,40 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
     }
+  });
+
+  // ---------- marcar exercício como DONE ----------
+  document.querySelectorAll('.ex').forEach(function (ex) {
+    let overlay = document.createElement('div');
+    overlay.className = 'ex-done-overlay';
+    overlay.innerHTML = '<div class="ck">✓</div>';
+    ex.appendChild(overlay);
+
+    let inner = ex.querySelector('.ex-inner');
+    if (!inner) return;
+    let btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ex-done-btn';
+    btn.innerHTML = '✓ Concluir exercício';
+    btn.setAttribute('aria-label', 'Marcar este exercício como concluído');
+    btn.addEventListener('click', function () {
+      let isDone = ex.classList.toggle('done');
+      btn.classList.toggle('undo', isDone);
+      btn.innerHTML = isDone ? '↺ Desmarcar exercício' : '✓ Concluir exercício';
+      btn.setAttribute('aria-label', isDone ? 'Desmarcar este exercício' : 'Marcar este exercício como concluído');
+      if (isDone) {
+        ex.classList.remove('open');
+        let header = ex.querySelector('.ex-header');
+        let body = ex.querySelector('.ex-body');
+        if (header) header.setAttribute('aria-expanded', 'false');
+        if (body) {
+          body.setAttribute('aria-hidden', 'true');
+          body.toggleAttribute('inert', true);
+          body.style.maxHeight = '0px';
+        }
+      }
+    });
+    inner.appendChild(btn);
   });
 
   // ---------- animate volume bars on scroll ----------
