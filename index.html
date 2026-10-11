@@ -147,7 +147,7 @@ body{
 .hamburger{
   position:fixed;top:14px;left:14px;z-index:95;
   width:40px;height:40px;border-radius:11px;
-  border:1px solid var(--border-strong);background:var(--panel-2);
+  border:1px solid var(--border-strong);background:var(--bg-2);
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
   transition:.25s;box-shadow:0 8px 24px rgba(0,0,0,.35);
@@ -577,16 +577,17 @@ table.data b{color:var(--text)}
   .wtitle{flex-wrap:wrap}
   .bulk-actions{flex:1 1 100%;margin-left:0}
   .checkin-btn{margin-left:0;width:100%;justify-content:center}
+  .day-banner{flex-direction:column;align-items:flex-start;gap:10px}
   .alts{grid-template-columns:1fr}
   .nav-inner{flex-wrap:wrap;align-items:center;padding:10px 12px 10px 56px;gap:8px}
   .brand{font-size:.95rem;letter-spacing:1.5px;flex:1 1 auto;justify-content:center}
   .brand .bolt{width:26px;height:26px;font-size:.9rem;border-radius:7px}
-  .theme-toggle{margin-left:auto;width:40px;height:40px;font-size:1.05rem}
+  .theme-toggle{width:40px;height:40px;font-size:1.05rem}
   .view-switcher{order:2;flex:1 1 100%;justify-content:center}
   .vtab{flex:1;text-align:center;padding:10px 6px;font-size:.85rem}
   .nav-tabs{order:3;flex:1 1 100%;width:100%;gap:6px;overflow-x:visible}
   .nav-tabs button{flex:1;min-width:0;padding:10px 4px;font-size:.78rem;text-align:center}
-  .today-badge{order:4;flex:1 1 100%;justify-content:center;padding:5px 10px;font-size:.72rem;gap:6px}
+  .today-badge{margin-left:auto;margin-right:auto;justify-content:center;padding:5px 10px;font-size:.72rem;gap:6px}
   .hamburger{top:calc(12px + env(safe-area-inset-top,0px))}
   .phase-tabs{flex-wrap:wrap;gap:6px}
   .ptab{flex:1 1 30%;min-width:0;padding:10px 12px}
@@ -630,13 +631,7 @@ table.data b{color:var(--text)}
 
 <nav class="nav">
   <div class="nav-inner">
-    <div class="brand"><div class="bolt">⚡</div><span class="grad">FitNourish Pro</span></div>
     <div class="today-badge" id="todayBadge"><span class="tb-date" id="tbDate">📅 --/--/----</span><span class="tb-phase" id="tbPhase">Fase Atual</span></div>
-    <div class="nav-tabs" id="navTabs">
-      <button class="active" data-phase="fase-atual">Atual</button>
-      <button data-phase="fase-1">Fase 1</button>
-      <button data-phase="fase-2">Fase 2</button>
-    </div>
     <div class="view-switcher" role="tablist" aria-label="Alternar visão">
       <button class="vtab active" data-view="treino" aria-selected="true">📋 Treino</button>
       <button class="vtab" data-view="dashboard" aria-selected="false">📊 Dashboard</button>
@@ -2599,7 +2594,7 @@ document.addEventListener('DOMContentLoaded', function () {
       kpi('🔥',seq,'Sequência (dias)')+
       kpi('💪',totalEx,'Exercícios realizados')+
       kpi('🎯',media,'Média exerc./treino');
-    $('dashSub').textContent='De '+inicio+' até hoje · '+decorridos+' dias acompanhados';
+    $('dashSub').textContent='De '+fmtBR(inicio)+' até hoje · '+decorridos+' dias acompanhados';
     var porDia={};
     DIAS_CHEIOS.forEach(function(d){ porDia[d]=0; });
     concl.forEach(function(r){ if(porDia[r.dia_semana]!==undefined) porDia[r.dia_semana]++; });
@@ -2636,6 +2631,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return '<div class="donut" style="background:conic-gradient('+stops.join(',')+')"></div><div class="donut-legend">'+legend+'</div>';
   }
   function rotMes(m){ var p=m.split('-'); return (MESES[parseInt(p[1],10)-1]||p[1])+'/'+p[0].slice(2); }
+  function fmtBR(s){ var p=s.split('-'); return p[2]+'-'+p[1]+'-'+p[0]; }
   function calendario(setDone){
     var now=new Date(), y=now.getFullYear(), mo=now.getMonth();
     var dowInicio=new Date(y,mo,1).getDay();
