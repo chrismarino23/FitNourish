@@ -182,6 +182,7 @@ body{
 .sidebar-close:hover{color:var(--neon);border-color:var(--neon)}
 
 .sidebar-nav{display:flex;flex-direction:column;padding:12px}
+.sidebar-nav[hidden]{display:none}
 .side-link{
   display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:12px;
   text-decoration:none;color:var(--dim);font-size:.92rem;font-weight:500;
@@ -438,6 +439,34 @@ table.volume .sets{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(-
 @keyframes checkin-spin{to{transform:rotate(360deg)}}
 .checkin-btn.loading{opacity:.75;pointer-events:none}
 
+/* ---------- editar peso (modal bottom-sheet) ---------- */
+.modal-backdrop{position:fixed;inset:0;z-index:110;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:opacity .3s ease}
+.bottom-sheet{position:fixed;left:0;right:0;bottom:0;z-index:111;background:var(--bg-2);border-radius:22px 22px 0 0;border-top:1px solid var(--border-strong);padding:12px 18px calc(18px + env(safe-area-inset-bottom,0px));transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.8,.2,1);max-width:520px;margin:0 auto;box-shadow:0 -12px 40px rgba(0,0,0,.4)}
+.bottom-sheet.open{transform:translateY(0)}
+.sheet-handle{width:44px;height:5px;border-radius:99px;background:var(--border-strong);margin:0 auto 14px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sheet-head h3{font-family:'Rajdhani',sans-serif;font-size:1.15rem;letter-spacing:1px;text-transform:uppercase;color:var(--neon);margin:0}
+.sheet-close{width:34px;height:34px;border-radius:9px;border:1px solid var(--border-strong);background:var(--panel-2);color:var(--dim);font-size:1rem;cursor:pointer;display:grid;place-items:center;transition:.25s}
+.sheet-close:hover{color:var(--neon);border-color:var(--neon)}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.field input{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border-strong);background:var(--panel);color:var(--text);font-size:1.15rem;font-weight:700}
+.field input:focus{outline:none;border-color:var(--neon)}
+.field-static{font-size:1rem;font-weight:600;color:var(--soft)}
+.imc-preview{border-radius:14px;padding:14px 16px;margin-bottom:16px;background:var(--panel);border:1px solid var(--border)}
+.imc-label{font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.imc-value{font-size:1.9rem;font-weight:800;color:var(--neon);line-height:1.1}
+.imc-class{font-size:.82rem;color:var(--soft);margin-top:2px}
+.sheet-actions{display:flex;gap:10px}
+.btn-cancel{flex:1;padding:14px;border-radius:12px;border:1px solid var(--border-strong);background:var(--panel-2);color:var(--dim);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:.25s}
+.btn-cancel:hover{color:var(--text)}
+.btn-save{flex:1;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--neon),var(--cyan));color:#04110d;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:.25s;box-shadow:0 0 22px rgba(0,255,157,.4)}
+.btn-save:hover{transform:translateY(-1px)}
+.btn-save:disabled{opacity:.7;pointer-events:none}
+.btn-save .spinner{width:15px;height:15px;border-radius:50%;border:2px solid currentColor;border-top-color:transparent;animation:checkin-spin .6s linear infinite;display:inline-block;vertical-align:-2px;margin-right:4px}
+.btn-edit-peso{display:inline-flex;align-items:center;justify-content:center;margin-left:6px;width:26px;height:26px;border-radius:8px;border:1px solid var(--border-strong);background:var(--panel-2);color:var(--neon);font-size:.85rem;cursor:pointer;vertical-align:middle;transition:.2s;flex-shrink:0}
+.btn-edit-peso:hover{border-color:var(--neon);transform:translateY(-1px)}
+
 /* ===================== DASHBOARD ===================== */
 .view-switcher{display:inline-flex;gap:2px;padding:3px;border-radius:99px;border:1px solid var(--border-strong);background:var(--panel-2);flex-shrink:0}
 .vtab{padding:6px 13px;border-radius:99px;border:none;background:transparent;color:var(--text);opacity:.6;cursor:pointer;font-weight:700;font-size:.8rem;letter-spacing:.4px;white-space:nowrap;transition:.25s;font-family:inherit}
@@ -445,16 +474,16 @@ table.volume .sets{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(-
 .vtab.active{opacity:1;color:#fff;background:linear-gradient(135deg,var(--neon),var(--purple));box-shadow:0 0 14px var(--neon)}
 .dash{padding-top:36px;padding-bottom:70px}
 .dash-head{text-align:center;margin-bottom:36px}
-.dash-kicker{font-size:.78rem;letter-spacing:3px;text-transform:uppercase;opacity:.7}
-.dash-head h1{font-size:2.2rem;font-weight:800;margin:8px 0 6px}
+.dash-kicker{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;opacity:.7}
+.dash-head h1{font-size:1.8rem;font-weight:800;margin:8px 0 6px}
 .dash-sub{opacity:.65;font-size:.95rem}
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
 .kpi{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px 16px;text-align:center}
-.kpi-ico{font-size:1.6rem;line-height:1}
-.kpi-val{font-size:2rem;font-weight:800;color:var(--neon);line-height:1.1;margin-top:8px}
-.kpi-lbl{font-size:.76rem;opacity:.6;margin-top:5px}
+.kpi-ico{font-size:1.35rem;line-height:1}
+.kpi-val{font-size:1.55rem;font-weight:800;color:var(--neon);line-height:1.15;margin-top:7px}
+.kpi-lbl{font-size:.72rem;opacity:.6;margin-top:5px}
 .dash-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:20px}
-.dash-h3{font-size:1.05rem;font-weight:700;margin-bottom:18px}
+.dash-h3{font-size:1rem;font-weight:700;margin-bottom:16px}
 .chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
 .hbar-list{display:flex;flex-direction:column;gap:10px}
 .hbar-row{display:flex;align-items:center;gap:10px}
@@ -463,7 +492,17 @@ table.volume .sets{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(-
 .hbar-fill{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
 .hbar-val{width:22px;font-size:.78rem;font-weight:700;text-align:right;flex-shrink:0}
 .donut-box{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
-.donut{width:150px;height:150px;border-radius:50%;flex-shrink:0}
+.donut{position:relative;width:150px;height:150px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 1px var(--border)}
+.donut-hole{position:absolute;inset:22px;border-radius:50%;background:var(--bg-2);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:inset 0 2px 10px rgba(0,0,0,.12)}
+.donut-hole .dh-val{font-size:1.6rem;font-weight:800;color:var(--text);line-height:1}
+.donut-hole .dh-lbl{font-size:.6rem;opacity:.55;text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+.chart-grid.donuts{grid-template-columns:1fr 1fr;gap:12px}
+.chart-grid.donuts .dash-card{padding:16px 14px}
+.chart-grid.donuts .donut-box{flex-direction:column;align-items:center;gap:10px}
+.chart-grid.donuts .donut{width:120px;height:120px}
+.chart-grid.donuts .donut-legend{width:100%;min-width:0}
+.chart-grid.donuts .donut-hole{inset:18px}
+@media (min-width:768px){.chart-grid.donuts .donut{width:150px;height:150px}}
 .donut-legend{flex:1;min-width:160px;display:flex;flex-direction:column;gap:8px}
 .dl-row{display:flex;align-items:center;gap:8px;font-size:.85rem}
 .dl-dot{width:11px;height:11px;border-radius:3px;flex-shrink:0}
@@ -479,6 +518,23 @@ table.volume .sets{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(-
 .adh-fill{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
 .adh-val{width:110px;font-size:.78rem;font-weight:700;text-align:right;flex-shrink:0}
 .dash-empty{text-align:center;padding:40px 20px;opacity:.6}
+.peso-chart{width:100%;height:auto;display:block;max-width:400px;margin:0 auto}
+.peso-chart .axis{stroke:var(--border-strong);stroke-width:1}
+.peso-chart .grid-line{stroke:var(--border);stroke-width:1;stroke-dasharray:3 3}
+.peso-chart .axis-label{fill:var(--muted);font-size:11px;font-family:'Inter',sans-serif}
+.peso-chart .data-label{fill:var(--text);font-size:11px;font-weight:700;font-family:'Inter',sans-serif}
+.peso-chart .area{fill:url(#pesoAreaGrad)}
+.peso-chart .line{fill:none;stroke:url(#pesoLineGrad);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.peso-chart .dot{fill:var(--neon);stroke:var(--bg-2);stroke-width:2}
+.peso-chart .dot.last{fill:var(--cyan);stroke:var(--bg-2);stroke-width:2.5}
+.peso-chart .goal-line{stroke:var(--amber);stroke-width:1.5}
+.peso-legenda{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:.8rem;opacity:.85}
+.peso-legenda .leg-item{display:inline-flex;align-items:center;gap:6px}
+.peso-legenda .leg-dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--neon))}
+.peso-legenda .leg-line{width:20px;height:0;border-top:2px dashed var(--amber)}
+.meta-progress{height:12px;border-radius:99px;background:var(--panel-2);overflow:hidden}
+.meta-progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--cyan),var(--neon));transition:width .8s cubic-bezier(.2,.8,.2,1);width:0}
+.meta-progress-lbl{font-size:.78rem;opacity:.75;margin-top:6px}
 .skeleton{position:relative;overflow:hidden;background:rgba(128,128,128,.28);border-radius:8px}
 .skeleton::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);animation:sk-shimmer 1.3s infinite}
 @keyframes sk-shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
@@ -608,7 +664,7 @@ table.data b{color:var(--text)}
     <span class="sidebar-title">📑 Sumário</span>
     <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">✕</button>
   </div>
-  <nav class="sidebar-nav">
+  <nav class="sidebar-nav" id="sidebarNav">
     <a href="#perfil" class="side-link"><span class="side-emoji">👤</span><span class="side-txt">Perfil &amp; Metas</span><span class="side-arrow">›</span></a>
     <a href="#semana" class="side-link"><span class="side-emoji">📅</span><span class="side-txt">Distribuição Semanal</span><span class="side-arrow">›</span></a>
     <a href="#volume" class="side-link"><span class="side-emoji">📊</span><span class="side-txt">Volume Semanal</span><span class="side-arrow">›</span></a>
@@ -619,6 +675,17 @@ table.data b{color:var(--text)}
     <a href="#aceleracao" class="side-link"><span class="side-emoji">🚀</span><span class="side-txt">Plano de Aceleração</span><span class="side-arrow">›</span></a>
     <a href="#glossario" class="side-link"><span class="side-emoji">📖</span><span class="side-txt">Glossário</span><span class="side-arrow">›</span></a>
     <a href="#fontes" class="side-link"><span class="side-emoji">🔬</span><span class="side-txt">Fontes Científicas</span><span class="side-arrow">›</span></a>
+  </nav>
+  <nav class="sidebar-nav" id="sidebarNavDash" hidden>
+    <a href="#dash-topo" class="side-link"><span class="side-emoji">📊</span><span class="side-txt">Visão Geral</span><span class="side-arrow">›</span></a>
+    <a href="#dash-peso" class="side-link"><span class="side-emoji">⚖️</span><span class="side-txt">Evolução do Peso</span><span class="side-arrow">›</span></a>
+    <a href="#dash-meta" class="side-link"><span class="side-emoji">🎯</span><span class="side-txt">Progresso da Meta</span><span class="side-arrow">›</span></a>
+    <a href="#dash-dias" class="side-link"><span class="side-emoji">📅</span><span class="side-txt">Frequência por Dia</span><span class="side-arrow">›</span></a>
+    <a href="#dash-meses" class="side-link"><span class="side-emoji">📆</span><span class="side-txt">Frequência por Mês</span><span class="side-arrow">›</span></a>
+    <a href="#dash-tipo" class="side-link"><span class="side-emoji">🍩</span><span class="side-txt">Treinos por Tipo</span><span class="side-arrow">›</span></a>
+    <a href="#dash-fase" class="side-link"><span class="side-emoji">🧭</span><span class="side-txt">Treinos por Fase</span><span class="side-arrow">›</span></a>
+    <a href="#dash-calendario" class="side-link"><span class="side-emoji">🗓️</span><span class="side-txt">Calendário</span><span class="side-arrow">›</span></a>
+    <a href="#dash-aderencia" class="side-link"><span class="side-emoji">📋</span><span class="side-txt">Aderência Semanal</span><span class="side-arrow">›</span></a>
   </nav>
 </aside>
 
@@ -656,7 +723,7 @@ table.data b{color:var(--text)}
     <div class="stat" style="--c:var(--orange)"><div class="label">RIR</div><div class="value">0-1</div></div>
     <div class="stat" style="--c:var(--purple)"><div class="label">Core</div><div class="value">3x/sem</div></div>
     <div class="stat" style="--c:var(--cyan)"><div class="label">Meta kcal</div><div class="value">1.650</div></div>
-    <div class="stat" style="--c:var(--orange)"><div class="label">Meta peso</div><div class="value">85 kg</div></div>
+    <div class="stat" style="--c:var(--orange)"><div class="label">Meta peso</div><div class="value" id="metaPesoStat">93 kg</div></div>
   </div>
 
   <div class="section-head" id="perfil"><span class="bar"></span><h2>Perfil & Metas</h2><span class="count">acompanhamento</span></div>
@@ -668,11 +735,11 @@ table.data b{color:var(--text)}
         <tr><td>Nascimento</td><td>23/08/1993</td></tr>
         <tr><td>Idade</td><td>33 anos</td></tr>
         <tr><td>Altura</td><td>1,78 m</td></tr>
-        <tr><td>Peso de referência</td><td>101 kg</td></tr>
-        <tr><td>IMC informado</td><td>31,88 — Obesidade Grau I</td></tr>
+        <tr><td>Peso de referência</td><td><span id="perfilPeso"><span class="skeleton" style="display:inline-block;width:64px;height:14px;vertical-align:middle"></span></span> <button class="btn-edit-peso" id="btnEditarPeso" aria-label="Editar peso" title="Editar peso">✏️</button></td></tr>
+        <tr><td>IMC informado</td><td id="perfilImc"><span class="skeleton" style="display:inline-block;width:150px;height:14px;vertical-align:middle"></span></td></tr>
         <tr><td>Retorno ao treino</td><td>15/09/2026</td></tr>
         <tr><td>Semana atual</td><td>Semana 4 em 10/10/2026</td></tr>
-        <tr><td>Meta de peso</td><td>Aproximadamente 85 kg (ou o mais próximo viável e saudável)</td></tr>
+        <tr><td>Meta de peso</td><td id="metaPesoTabela">Aproximadamente 93 kg (ou o mais próximo viável e saudável)</td></tr>
       </tbody>
     </table>
   </div>
@@ -1675,7 +1742,7 @@ table.data b{color:var(--text)}
         <tr><td>TMB</td><td>Taxa Metabólica Basal — energia mínima para funções vitais em repouso. Crys: ~2.002 kcal/dia.</td></tr>
         <tr><td>TDEE</td><td>Total Daily Energy Expenditure — Gasto Energético Diário Total: TMB + atividade + treino + digestão. Crys: ~2.753 kcal/dia.</td></tr>
         <tr><td>EMG</td><td>Eletromiografia (Electromyography) — registro da ativação elétrica muscular.</td></tr>
-        <tr><td>IMC</td><td>Índice de Massa Corporal — peso/altura²; triagem, não separa músculo de gordura. Crys: 31,88.</td></tr>
+        <tr><td>IMC</td><td>Índice de Massa Corporal — peso/altura²; triagem, não separa músculo de gordura. Crys: <span id="glossImc" class="skeleton" style="display:inline-block;width:42px;height:12px;vertical-align:middle"></span>.</td></tr>
         <tr><td>ACSM</td><td>American College of Sports Medicine — Colégio Americano de Medicina do Esporte; define diretrizes de exercício e treinamento.</td></tr>
         <tr><td>ISSN</td><td>International Society of Sports Nutrition — Sociedade Internacional de Nutrição Esportiva; posicionamentos sobre suplementos.</td></tr>
         <tr><td>RCT</td><td>Randomized Controlled Trial — Ensaio Clínico Randomizado; estudo com grupo controle, padrão-ouro de evidência.</td></tr>
@@ -1739,22 +1806,36 @@ table.data b{color:var(--text)}
 </div>
 
 <div id="view-dashboard" class="container dash" hidden>
-  <header class="dash-head">
+  <header class="dash-head" id="dash-topo">
     <div class="dash-kicker">📊 Acompanhamento Executivo</div>
     <h1>Dashboard</h1>
     <p class="dash-sub" id="dashSub">Suas métricas de aderência e frequência</p>
   </header>
   <div class="kpi-grid" id="kpiGrid"></div>
-  <div class="chart-grid">
-    <div class="dash-card"><h3 class="dash-h3">📅 Frequência por dia da semana</h3><div class="hbar-list" id="chartDias"></div></div>
-    <div class="dash-card"><h3 class="dash-h3">📆 Frequência por mês</h3><div class="hbar-list" id="chartMeses"></div></div>
+  <div class="dash-card" id="dash-peso">
+    <h3 class="dash-h3">⚖️ Evolução do peso</h3>
+    <div id="pesoResumo" style="margin-bottom:8px;opacity:.8;font-size:.86rem"></div>
+    <div id="chartPeso"></div>
+    <div id="pesoLegenda" class="peso-legenda"></div>
+  </div>
+  <div class="dash-card" id="dash-meta">
+    <h3 class="dash-h3">🎯 Progresso da Meta de Peso</h3>
+    <div class="meta-progress"><div class="meta-progress-fill" id="metaProgressFill"></div></div>
+    <div class="meta-progress-lbl" id="metaProgressLbl"></div>
+    <div class="kpi-grid" id="kpiPesoGrid" style="margin-top:14px"></div>
   </div>
   <div class="chart-grid">
-    <div class="dash-card"><h3 class="dash-h3">🍩 Treinos por tipo</h3><div class="donut-box" id="donutTipo"></div></div>
-    <div class="dash-card" id="cardFase"><h3 class="dash-h3">🧭 Treinos por fase</h3><div class="donut-box" id="donutFase"></div></div>
+    <div class="dash-card" id="dash-dias"><h3 class="dash-h3">📅 Frequência por dia da semana</h3><div class="hbar-list" id="chartDias"></div></div>
+    <div class="dash-card" id="dash-meses"><h3 class="dash-h3">📆 Frequência por mês</h3><div class="hbar-list" id="chartMeses"></div></div>
   </div>
-  <div class="dash-card"><h3 class="dash-h3">🗓️ Calendário do mês</h3><div class="cal" id="calendario"></div></div>
-  <div class="dash-card"><h3 class="dash-h3">📋 Aderência por semana</h3><div class="adh" id="aderencia"></div></div>
+  <div class="chart-grid donuts">
+    <div class="dash-card" id="dash-tipo"><h3 class="dash-h3">🍩 Treinos por tipo</h3><div class="donut-box" id="donutTipo"></div></div>
+    <div class="dash-card" id="dash-fase"><h3 class="dash-h3">🧭 Treinos por fase</h3><div class="donut-box" id="donutFase"></div></div>
+  </div>
+  <div class="chart-grid">
+    <div class="dash-card" id="dash-calendario"><h3 class="dash-h3">🗓️ Calendário do mês</h3><div class="cal" id="calendario"></div></div>
+    <div class="dash-card" id="dash-aderencia"><h3 class="dash-h3">📋 Aderência por semana</h3><div class="adh" id="aderencia"></div></div>
+  </div>
 </div>
 
 <button class="to-top" id="toTop" aria-label="Voltar ao topo">↑</button>
@@ -2526,10 +2607,27 @@ document.addEventListener('DOMContentLoaded', function () {
     main.hidden=isDash;
     dash.hidden=!isDash;
     vtabs.forEach(function(b){ var on=b.getAttribute('data-view')===v; b.classList.toggle('active',on); b.setAttribute('aria-selected',on?'true':'false'); });
+    var navTreino = document.getElementById('sidebarNav');
+    var navDash = document.getElementById('sidebarNavDash');
+    if (navTreino) navTreino.hidden = isDash;
+    if (navDash) navDash.hidden = !isDash;
+    var st = document.querySelector('.sidebar-title');
+    if (st) st.textContent = isDash ? '📑 Dashboard' : '📑 Sumário';
     if(isDash) carregar();
     window.scrollTo(0,0);
   }
   vtabs.forEach(function(b){ b.addEventListener('click',function(){ setView(b.getAttribute('data-view')); }); });
+  document.querySelectorAll('#sidebarNavDash .side-link').forEach(function(link){
+    link.addEventListener('click', function(e){
+      e.preventDefault();
+      var target = link.getAttribute('href');
+      setView('dashboard');
+      setTimeout(function(){
+        var el = document.querySelector(target);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    });
+  });
   var loaded=false;
   function showSkeleton(){
     var k='';
@@ -2549,6 +2647,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var a='';
     for(var r2=0;r2<4;r2++){ a+='<div class="skeleton sk-adh"></div>'; }
     $('aderencia').innerHTML=a;
+    var pr = $('pesoResumo'); if (pr) pr.innerHTML = '<div class="skeleton" style="width:75%;height:12px"></div>';
+    var cp = $('chartPeso'); if (cp) cp.innerHTML = '<div class="skeleton" style="width:100%;height:220px;border-radius:12px"></div>';
+    var pl = $('pesoLegenda'); if (pl) pl.innerHTML = '<div class="skeleton" style="width:55%;height:12px"></div>';
+    var mf = $('metaProgressFill'); if (mf) mf.style.width = '0%';
+    var ml = $('metaProgressLbl'); if (ml) ml.innerHTML = '<div class="skeleton" style="width:60%;height:12px"></div>';
+    var kg = '';
+    for(var k=0;k<4;k++){ kg+='<div class="sk"><div class="skeleton sk-ico"></div><div class="skeleton sk-val"></div><div class="skeleton sk-lbl"></div></div>'; }
+    var kGrid = $('kpiPesoGrid'); if (kGrid) kGrid.innerHTML = kg;
   }
   function setEmpty(msg){
     $('kpiGrid').innerHTML='<div class="dash-empty">'+msg+'</div>';
@@ -2567,12 +2673,14 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch(CFG.url+'?token='+encodeURIComponent(CFG.token))
       .then(function(r){ return r.json(); })
       .then(function(res){
-        if(res && res.ok && res.registros) render(res.registros);
+        if(res && res.ok && res.registros) render(res.registros, res.peso_historico, res.perfil);
         else setEmpty('Nenhum dado ainda.');
       })
       .catch(function(){ setEmpty('Erro ao carregar os dados.'); });
   }
-  function render(regs){
+  window.__refreshDashboard = function(){ loaded = false; if (!dash.hidden) carregar(); };
+  function render(regs, pesoHistorico, perfil){
+    regs.forEach(function(r){ r.data = normData(r.data); });
     var concl=regs.filter(function(r){ return r.concluido===1||r.concluido==='1'; });
     var diasTreinados=concl.length;
     var totalEx=concl.reduce(function(s,r){ return s+(parseInt(r.exercicios,10)||0); },0);
@@ -2587,13 +2695,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var seq=0;
     var cur=setDone[hoje()]?hoje():addD(hoje(),-1);
     while(setDone[cur]){ seq++; cur=addD(cur,-1); }
+    var pesoAtual = (perfil && perfil.peso !== undefined && perfil.peso !== null) ? parseFloat(perfil.peso) : null;
     $('kpiGrid').innerHTML=
       kpi('📅',diasTreinados,'Dias treinados')+
       kpi('📈',freq+'%','Frequência geral')+
       kpi('❌',faltas,'Faltas')+
       kpi('🔥',seq,'Sequência (dias)')+
       kpi('💪',totalEx,'Exercícios realizados')+
-      kpi('🎯',media,'Média exerc./treino');
+      kpi('🎯',media,'Média exerc./treino')+
+      kpi('⚖️',(pesoAtual !== null ? String(pesoAtual).replace('.',',')+' kg' : '—'),'Peso atual');
     $('dashSub').textContent='De '+fmtBR(inicio)+' até hoje · '+decorridos+' dias acompanhados';
     var porDia={};
     DIAS_CHEIOS.forEach(function(d){ porDia[d]=0; });
@@ -2615,9 +2725,130 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     $('calendario').innerHTML=calendario(setDone);
     $('aderencia').innerHTML=aderencia(setDone);
+    renderPeso(pesoHistorico, perfil);
+    renderMetaPeso(pesoHistorico, perfil);
     dash.classList.remove('dash-fade');
     void dash.offsetWidth;
     dash.classList.add('dash-fade');
+  }
+  function renderPeso(pesoHistorico, perfil){
+    var el = document.getElementById('chartPeso');
+    var resumo = document.getElementById('pesoResumo');
+    if (!pesoHistorico || !pesoHistorico.length) {
+      if (el) el.innerHTML = '<div class="dash-empty">Sem histórico de peso.</div>';
+      if (resumo) resumo.innerHTML = '';
+      return;
+    }
+    var hist = pesoHistorico.slice();
+    hist.forEach(function(h){ h.data = normData(h.data); });
+    hist.sort(function(a,b){ return a.data < b.data ? -1 : (a.data > b.data ? 1 : 0); });
+    var pesos = hist.map(function(h){ return parseFloat(h.peso) || 0; });
+    var meta = (perfil && perfil.meta_peso !== undefined && perfil.meta_peso !== null) ? parseFloat(perfil.meta_peso) : 85;
+    var primeiro = pesos[0];
+    var ultimo = pesos[pesos.length - 1];
+    var variacao = ultimo - primeiro;
+    if (resumo) {
+      resumo.innerHTML = 'De <b>' + fmtBR(hist[0].data) + '</b> a <b>' + fmtBR(hist[hist.length - 1].data) + '</b> · variação <b>' + (variacao >= 0 ? '+' : '') + variacao.toFixed(1).replace('.', ',') + ' kg</b>';
+    }
+    if (el) el.innerHTML = linhaPeso(hist, pesos, meta);
+    var legenda = document.getElementById('pesoLegenda');
+    if (legenda) {
+      legenda.innerHTML = '<span class="leg-item"><span class="leg-dot"></span> Peso (kg)</span>' +
+                          '<span class="leg-item"><span class="leg-line"></span> Meta (' + fmtKg(meta) + ' kg)</span>';
+    }
+  }
+
+  function renderMetaPeso(pesoHistorico, perfil){
+    var grid = document.getElementById('kpiPesoGrid');
+    var fill = document.getElementById('metaProgressFill');
+    var lbl = document.getElementById('metaProgressLbl');
+    if (!grid) return;
+    if (!pesoHistorico || !pesoHistorico.length || !perfil || perfil.meta_peso === undefined || perfil.meta_peso === null || perfil.meta_peso === '') {
+      grid.innerHTML = '<div class="dash-empty">Sem dados de peso.</div>';
+      if (fill) fill.style.width = '0%';
+      if (lbl) lbl.textContent = '';
+      return;
+    }
+    var hist = pesoHistorico.slice();
+    hist.forEach(function(h){ h.data = normData(h.data); });
+    hist.sort(function(a,b){ return a.data < b.data ? -1 : (a.data > b.data ? 1 : 0); });
+    var inicial = parseFloat(hist[0].peso);
+    var atual = parseFloat(hist[hist.length - 1].peso);
+    var meta = parseFloat(perfil.meta_peso);
+    var aPerder = inicial - meta;
+    var perdido = inicial - atual;
+    var restante = atual - meta;
+    var atingimento = aPerder > 0 ? Math.max(0, Math.min(100, (perdido / aPerder) * 100)) : (perdido >= 0 ? 100 : 0);
+    var faltante = Math.max(0, 100 - atingimento);
+    if (fill) fill.style.width = atingimento.toFixed(1) + '%';
+    if (lbl) lbl.textContent = atingimento.toFixed(1).replace('.', ',') + '% atingido · falta ' + faltante.toFixed(1).replace('.', ',') + '%';
+    grid.innerHTML =
+      kpi('📉', fmtKg(perdido) + ' kg', 'Peso perdido') +
+      kpi('⚖️', fmtKg(restante) + ' kg', 'Faltam p/ meta') +
+      kpi('🎯', atingimento.toFixed(1).replace('.', ',') + '%', 'Meta atingida') +
+      kpi('⏳', faltante.toFixed(1).replace('.', ',') + '%', 'Falta (%)');
+  }
+
+  function fmtKg(v){ var r = Math.round(v * 10) / 10; return (r % 1 === 0 ? r : r.toFixed(1).replace('.', ',')); }
+
+  function linhaPeso(hist, pesos, meta){
+    var W = 340, H = 360, padL = 56, padR = 48, padT = 48, padB = 36;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var n = pesos.length;
+    var maxPeso = Math.max.apply(null, pesos);
+    var minPeso = Math.min(meta, Math.min.apply(null, pesos));
+    var top = maxPeso + 1;
+    var bottom = minPeso - 1;
+    function x(i){ return n === 1 ? padL + plotW / 2 : padL + (i / (n - 1)) * plotW; }
+    function y(p){ return padT + ((top - p) / (top - bottom)) * plotH; }
+    var pts = hist.map(function(h, i){ return { x: x(i), y: y(pesos[i]), d: fmtBR(h.data).slice(0, 5), p: pesos[i] }; });
+
+    var defs = '<defs>' +
+      '<linearGradient id="pesoLineGrad" x1="0" y1="0" x2="1" y2="0">' +
+        '<stop offset="0%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#00ff9d"/>' +
+      '</linearGradient>' +
+      '<linearGradient id="pesoAreaGrad" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="rgba(0,255,157,.25)"/><stop offset="100%" stop-color="rgba(0,255,157,0)"/>' +
+      '</linearGradient>' +
+      '</defs>';
+
+    var yVals = [];
+    pesos.forEach(function(p){ if (yVals.indexOf(p) === -1) yVals.push(p); });
+    if (yVals.indexOf(meta) === -1) yVals.push(meta);
+    yVals.sort(function(a,b){ return b - a; });
+
+    var grid = '';
+    yVals.forEach(function(t){
+      var ty = y(t);
+      grid += '<line x1="' + padL + '" y1="' + ty + '" x2="' + (W - padR) + '" y2="' + ty + '" class="grid-line"/>';
+      grid += '<text x="' + (padL - 8) + '" y="' + (ty + 4) + '" class="axis-label" text-anchor="end">' + fmtKg(t) + ' kg</text>';
+    });
+
+    var xLabels = '';
+    pts.forEach(function(p){
+      xLabels += '<text x="' + p.x.toFixed(1) + '" y="' + (H - 14) + '" class="axis-label" text-anchor="middle">' + p.d + '</text>';
+    });
+
+    var axes = '<line x1="' + padL + '" y1="' + padT + '" x2="' + padL + '" y2="' + (H - padB) + '" class="axis"/>' +
+               '<line x1="' + padL + '" y1="' + (H - padB) + '" x2="' + (W - padR) + '" y2="' + (H - padB) + '" class="axis"/>';
+
+    var metaY = y(meta);
+    var goal = '<line x1="' + padL + '" y1="' + metaY + '" x2="' + (W - padR) + '" y2="' + metaY + '" class="goal-line" stroke-dasharray="5 4"/>';
+
+    var ptsStr = pts.map(function(p){ return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' ');
+    var area = n > 1 ? '<polygon points="' + ptsStr + ' ' + (W - padR) + ',' + (H - padB) + ' ' + padL + ',' + (H - padB) + '" class="area"/>' : '';
+    var line = n > 1 ? '<polyline points="' + ptsStr + '" class="line"/>' : '';
+
+    var dots = '', labels = '';
+    pts.forEach(function(p, i){
+      var isLast = (i === n - 1);
+      var anchor = (n === 1) ? 'middle' : (i === 0 ? 'start' : (isLast ? 'end' : 'middle'));
+      var lx = (i === 0) ? p.x + 6 : (isLast ? p.x - 6 : p.x);
+      dots += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' + (isLast ? 5 : 4) + '" class="' + (isLast ? 'dot last' : 'dot') + '"><title>' + p.d + ' · ' + fmtKg(p.p) + ' kg</title></circle>';
+      labels += '<text x="' + lx.toFixed(1) + '" y="' + (p.y - 12).toFixed(1) + '" class="data-label" text-anchor="' + anchor + '">' + fmtKg(p.p) + ' kg</text>';
+    });
+
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="peso-chart" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Evolução do peso">' + defs + grid + area + axes + goal + line + dots + labels + xLabels + '</svg>';
   }
   function kpi(ico,val,lbl){ return '<div class="kpi"><div class="kpi-ico">'+ico+'</div><div class="kpi-val">'+val+'</div><div class="kpi-lbl">'+lbl+'</div></div>'; }
   function bar(lbl,v,max){ var pct=Math.round(v/max*100); return '<div class="hbar-row"><div class="hbar-lbl">'+lbl+'</div><div class="hbar-track"><div class="hbar-fill" style="width:'+pct+'%;background:linear-gradient(90deg,'+PALETA[0]+','+PALETA[3]+')"></div></div><div class="hbar-val">'+v+'</div></div>'; }
@@ -2627,11 +2858,22 @@ document.addEventListener('DOMContentLoaded', function () {
     if(!total) return '<div class="dash-empty">Sem dados.</div>';
     var acc=0,stops=[];
     entries.forEach(function(e,i){ var p0=Math.round(acc/total*100); acc+=e.v; var p1=Math.round(acc/total*100); stops.push(PALETA[i%PALETA.length]+' '+p0+'% '+p1+'%'); });
-    var legend=entries.map(function(e,i){ var pct=Math.round(e.v/total*100); return '<div class="dl-row"><span class="dl-dot" style="background:'+PALETA[i%PALETA.length]+'"></span><span class="dl-name">'+e.k+'</span><span class="dl-val">'+e.v+' ('+pct+'%)</span></div>'; }).join('');
-    return '<div class="donut" style="background:conic-gradient('+stops.join(',')+')"></div><div class="donut-legend">'+legend+'</div>';
+    var legend=entries.map(function(e,i){ var pct=Math.round(e.v/total*100); return '<div class="dl-row"><span class="dl-dot" style="background:'+PALETA[i%PALETA.length]+'"></span><span class="dl-name">'+e.k+'</span><span class="dl-val">'+e.v+' · '+pct+'%</span></div>'; }).join('');
+    return '<div class="donut" style="background:conic-gradient('+stops.join(',')+')"><div class="donut-hole"><div class="dh-val">'+total+'</div><div class="dh-lbl">treinos</div></div></div><div class="donut-legend">'+legend+'</div>';
   }
   function rotMes(m){ var p=m.split('-'); return (MESES[parseInt(p[1],10)-1]||p[1])+'/'+p[0].slice(2); }
-  function fmtBR(s){ var p=s.split('-'); return p[2]+'-'+p[1]+'-'+p[0]; }
+  function fmtBR(s){ var p=s.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+  function normData(s){
+    if (s === null || s === undefined || s === '') return s;
+    var str = String(s);
+    var m = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (m) return m[1] + '-' + pad2(parseInt(m[2],10)) + '-' + pad2(parseInt(m[3],10));
+    m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+    if (m) { var a = parseInt(m[3],10); if (a < 100) a += 2000; return a + '-' + pad2(parseInt(m[2],10)) + '-' + pad2(parseInt(m[1],10)); }
+    var d = new Date(str.replace(/\([^)]*\)/g, '').trim());
+    if (!isNaN(d.getTime())) return d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate());
+    return str;
+  }
   function calendario(setDone){
     var now=new Date(), y=now.getFullYear(), mo=now.getMonth();
     var dowInicio=new Date(y,mo,1).getDay();
@@ -2666,6 +2908,159 @@ document.addEventListener('DOMContentLoaded', function () {
     return rows.length?rows.join(''):'<div class="dash-empty">Sem dados.</div>';
   }
   function curto(s){ var p=parts(s); return p[2]+'/'+pad2(p[1]+1); }
+})();
+</script>
+
+<div class="modal-backdrop" id="perfilBackdrop" hidden></div>
+<div class="bottom-sheet" id="perfilSheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h3 id="sheetTitle">✏️ Editar peso</h3>
+    <button class="sheet-close" id="sheetClose" aria-label="Fechar">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div class="field">
+      <label for="pesoInput">Peso (kg)</label>
+      <input type="number" id="pesoInput" inputmode="decimal" step="0.1" min="30" max="500" placeholder="Ex.: 101">
+    </div>
+    <div class="field">
+      <label>Altura</label>
+      <div class="field-static" id="alturaView">1,78 m</div>
+    </div>
+    <div class="imc-preview">
+      <div class="imc-label">IMC</div>
+      <div class="imc-value" id="imcPreview">—</div>
+      <div class="imc-class" id="imcClassPreview">Digite o peso</div>
+    </div>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn-cancel" id="sheetCancel">Cancelar</button>
+    <button class="btn-save" id="sheetSave">💾 Salvar</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var CFG = window.CHECKIN;
+  if (!CFG || !CFG.url) return;
+
+  var altura = 1.78;
+  var pesoAtual = null;
+
+  function fmtImc(imc) { return (imc === null || imc === undefined) ? '—' : String(imc).replace('.', ','); }
+  function setHtml(id, txt) { var el = document.getElementById(id); if (el) el.innerHTML = txt; }
+  function classificar(imc) {
+    if (imc < 18.5) return 'Abaixo do peso';
+    if (imc < 25) return 'Peso normal';
+    if (imc < 30) return 'Sobrepeso';
+    if (imc < 35) return 'Obesidade Grau I';
+    if (imc < 40) return 'Obesidade Grau II';
+    return 'Obesidade Grau III';
+  }
+  function preencher(p) {
+    var imcStr = fmtImc(p.imc);
+    setHtml('perfilPeso', (p.peso !== null && p.peso !== undefined) ? p.peso + ' kg' : '—');
+    setHtml('perfilImc', imcStr + (p.imc_classificacao ? ' — ' + p.imc_classificacao : ''));
+    var g = document.getElementById('glossImc');
+    if (g) { g.classList.remove('skeleton'); g.removeAttribute('style'); g.textContent = imcStr; }
+    var meta = parseFloat(p.meta_peso);
+    if (!isNaN(meta)) {
+      var metaStr = (meta % 1 === 0 ? meta : meta.toFixed(1).replace('.', ','));
+      var ms = document.getElementById('metaPesoStat');
+      if (ms) ms.textContent = metaStr + ' kg';
+      var mt = document.getElementById('metaPesoTabela');
+      if (mt) mt.textContent = 'Aproximadamente ' + metaStr + ' kg (ou o mais próximo viável e saudável)';
+    }
+  }
+
+  function carregar() {
+    if (!CFG.token) return;
+    fetch(CFG.url + '?token=' + encodeURIComponent(CFG.token))
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.ok && res.perfil) {
+          var p = res.perfil;
+          altura = parseFloat(p.altura) || 1.78;
+          pesoAtual = (p.peso !== null && p.peso !== undefined) ? parseFloat(p.peso) : null;
+          preencher(p);
+        }
+      })
+      .catch(function () {});
+  }
+
+  var backdrop = document.getElementById('perfilBackdrop');
+  var sheet = document.getElementById('perfilSheet');
+  var input = document.getElementById('pesoInput');
+  var imcPreview = document.getElementById('imcPreview');
+  var imcClassPreview = document.getElementById('imcClassPreview');
+  var alturaView = document.getElementById('alturaView');
+
+  function atualizarPreview() {
+    var v = parseFloat(input.value);
+    if (!v || v <= 0) { imcPreview.textContent = '—'; imcClassPreview.textContent = 'Digite o peso'; return; }
+    var imc = Math.round((v / (altura * altura)) * 100) / 100;
+    imcPreview.textContent = String(imc).replace('.', ',');
+    imcClassPreview.textContent = classificar(imc);
+  }
+  function abrir() {
+    if (!sheet) return;
+    input.value = pesoAtual !== null ? pesoAtual : '';
+    alturaView.textContent = String(altura).replace('.', ',') + ' m';
+    atualizarPreview();
+    backdrop.hidden = false;
+    sheet.hidden = false;
+    requestAnimationFrame(function () { sheet.classList.add('open'); });
+    setTimeout(function () { input.focus(); }, 300);
+  }
+  function fechar() {
+    sheet.classList.remove('open');
+    setTimeout(function () { backdrop.hidden = true; sheet.hidden = true; }, 300);
+  }
+
+  var btnEdit = document.getElementById('btnEditarPeso');
+  if (btnEdit) btnEdit.addEventListener('click', abrir);
+  if (backdrop) backdrop.addEventListener('click', fechar);
+  var sc = document.getElementById('sheetClose');
+  if (sc) sc.addEventListener('click', fechar);
+  var scancel = document.getElementById('sheetCancel');
+  if (scancel) scancel.addEventListener('click', fechar);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fechar(); });
+  if (input) input.addEventListener('input', atualizarPreview);
+
+  var btnSave = document.getElementById('sheetSave');
+  if (btnSave) btnSave.addEventListener('click', function () {
+    var v = parseFloat(input.value);
+    if (!v || v <= 0) { alert('Digite um peso válido.'); return; }
+    if (!CFG.token) { alert('Configure o token em CHECKIN.token antes de usar.'); return; }
+    btnSave.disabled = true;
+    btnSave.innerHTML = '<span class="spinner"></span> Salvando…';
+    fetch(CFG.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ token: CFG.token, perfil: CFG.perfil, acao: 'salvar_peso', peso: v })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.ok && res.perfil) {
+          var p = res.perfil;
+          altura = parseFloat(p.altura) || altura;
+          pesoAtual = v;
+          preencher(p);
+          if (window.__refreshDashboard) window.__refreshDashboard();
+          fechar();
+        } else {
+          alert('Erro ao salvar: ' + ((res && res.erro) || 'resposta inválida'));
+        }
+      })
+      .catch(function (err) { alert('Erro de conexão com a planilha: ' + err); })
+      .then(function () {
+        btnSave.disabled = false;
+        btnSave.innerHTML = '💾 Salvar';
+      });
+  });
+
+  carregar();
 })();
 </script>
 </body>
