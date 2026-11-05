@@ -428,6 +428,12 @@ table.volume .sets{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(-
 .ex-done-btn:active{transform:scale(.98)}
 .ex-done-btn.undo{border-color:color-mix(in srgb,var(--amber) 55%,transparent);background:rgba(255,214,10,.12);color:var(--amber)}
 .ex-done-btn.undo:hover{background:rgba(255,214,10,.22);box-shadow:0 0 22px rgba(255,214,10,.3)}
+.ex-carga-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:6px;
+  padding:13px 18px;border-radius:12px;border:1px solid color-mix(in srgb,var(--cyan) 55%,transparent);
+  background:rgba(0,229,255,.1);color:var(--cyan);font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:.95rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:.25s}
+.ex-carga-btn:hover{background:rgba(0,229,255,.2);box-shadow:0 0 22px rgba(0,229,255,.3);transform:translateY(-1px)}
+.ex-carga-btn:active{transform:scale(.98)}
 
 /* ---------- ações em massa (marcar/desmarcar todos do dia) ---------- */
 .bulk-actions{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;align-items:center}
@@ -1388,6 +1394,29 @@ table.data b{color:var(--text)}
   </div>
 </div>
 
+<div class="modal-backdrop" id="cargaBackdrop" hidden></div>
+<div class="bottom-sheet" id="cargaSheet" hidden role="dialog" aria-modal="true" aria-labelledby="cargaSheetTitle">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h3 id="cargaSheetTitle">🏋️ Peso do exercício</h3>
+    <button class="sheet-close" id="cargaSheetClose" aria-label="Fechar">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div class="field">
+      <label>Exercício</label>
+      <div class="field-static" id="cargaExView">—</div>
+    </div>
+    <div class="field">
+      <label for="cargaInput">Peso (carga atual)</label>
+      <input type="text" id="cargaInput" inputmode="decimal" placeholder="Ex.: 80 kg">
+    </div>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn-cancel" id="cargaCancel">Cancelar</button>
+    <button class="btn-save" id="cargaSave">💾 Salvar</button>
+  </div>
+</div>
+
 <button class="to-top" id="toTop" aria-label="Voltar ao topo">↑</button>
 
 <script>
@@ -2152,6 +2181,138 @@ document.addEventListener('DOMContentLoaded', function () {
       marcarExerciciosDoDia(false);
       statusHoje();
     }
+  });
+})();
+</script>
+
+<script>
+(function () {
+  'use strict';
+  var CFG = window.CHECKIN;
+  if (!CFG || !CFG.url) return;
+
+  // ---------- pesos dos exercícios (cargas salvas na planilha) ----------
+  var CARGA_SKIP = ['Esteira', 'Caminhada', 'HIIT', 'Recuperação'];
+  var cargas = {}; // exercicio -> peso (string)
+
+  function $(id) { return document.getElementById(id); }
+  function exName(ex) {
+    var h3 = ex.querySelector('.ex-info h3');
+    if (!h3) return '';
+    var c = h3.cloneNode(true);
+    c.querySelectorAll('span').forEach(function (s) { s.remove(); });
+    return c.textContent.trim();
+  }
+  function skipEx(name) {
+    for (var i = 0; i < CARGA_SKIP.length; i++) {
+      if (name.indexOf(CARGA_SKIP[i]) !== -1) return true;
+    }
+    return false;
+  }
+  function setLoad(ex, txt) {
+    var tag = ex.querySelector('.tag-load');
+    if (tag && txt) tag.textContent = '🏋️ ' + txt;
+  }
+
+  // injeta o botão de peso em cada exercício (exceto cardio)
+  document.querySelectorAll('.ex').forEach(function (ex) {
+    var name = exName(ex);
+    if (!name || skipEx(name)) return;
+    ex.setAttribute('data-ex', name);
+    var inner = ex.querySelector('.ex-inner');
+    if (!inner) return;
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ex-carga-btn';
+    btn.setAttribute('aria-label', 'Adicionar ou editar o peso deste exercício');
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      abrirCarga(name, btn, ex);
+    });
+    inner.appendChild(btn);
+  });
+
+  // carrega as cargas salvas e atualiza as tags
+  if (CFG.token) {
+    fetch(CFG.url + '?token=' + encodeURIComponent(CFG.token))
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res || !res.ok || !res.cargas) return;
+        (res.cargas || []).forEach(function (c) {
+          if (c && c.exercicio) cargas[c.exercicio] = c.peso;
+        });
+        document.querySelectorAll('.ex[data-ex]').forEach(function (ex) {
+          var name = ex.getAttribute('data-ex');
+          var b = ex.querySelector('.ex-carga-btn');
+          if (cargas[name]) {
+            setLoad(ex, cargas[name]);
+            if (b) b.innerHTML = '✏️ Peso: ' + cargas[name];
+          } else if (b) {
+            b.innerHTML = '🏋️ Adicionar peso';
+          }
+        });
+      })
+      .catch(function () {});
+  }
+
+  // bottom-sheet de carga
+  var backdrop = $('cargaBackdrop'), sheet = $('cargaSheet');
+  var input = $('cargaInput'), exView = $('cargaExView');
+  var saveBtn = $('cargaSave');
+  var exAtual = null, btnAtual = null, cardAtual = null;
+
+  function abrirCarga(name, btn, ex) {
+    if (!sheet) return;
+    exAtual = name; btnAtual = btn; cardAtual = ex;
+    if (exView) exView.textContent = name;
+    if (input) input.value = cargas[name] || '';
+    backdrop.hidden = false;
+    sheet.hidden = false;
+    requestAnimationFrame(function () { sheet.classList.add('open'); });
+    setTimeout(function () { if (input) input.focus(); }, 300);
+  }
+  function fecharCarga() {
+    sheet.classList.remove('open');
+    setTimeout(function () { backdrop.hidden = true; sheet.hidden = true; }, 300);
+  }
+
+  var closeBtn = $('cargaSheetClose');
+  if (closeBtn) closeBtn.addEventListener('click', fecharCarga);
+  if (backdrop) backdrop.addEventListener('click', fecharCarga);
+  var cancelBtn = $('cargaCancel');
+  if (cancelBtn) cancelBtn.addEventListener('click', fecharCarga);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && sheet && !sheet.hidden) fecharCarga();
+  });
+
+  if (saveBtn) saveBtn.addEventListener('click', function () {
+    if (!exAtual) return;
+    if (!CFG.token) { alert('Configure o token em CHECKIN.token antes de usar.'); return; }
+    var raw = (input ? input.value : '').trim();
+    if (!raw) { alert('Digite o peso.'); return; }
+    if (/^\d+([.,]\d+)?$/.test(raw)) {
+      raw = raw.replace('.', ',') + ' kg';
+    }
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spinner"></span> Salvando…';
+    fetch(CFG.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ token: CFG.token, perfil: CFG.perfil, acao: 'salvar_carga', exercicio: exAtual, peso: raw })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.ok) {
+          cargas[exAtual] = raw;
+          if (cardAtual) setLoad(cardAtual, raw);
+          if (btnAtual) btnAtual.innerHTML = '✏️ Peso: ' + raw;
+          fecharCarga();
+        } else {
+          alert('Erro ao salvar: ' + ((res && res.erro) || 'resposta inválida'));
+        }
+      })
+      .catch(function (err) { alert('Erro de conexão com a planilha: ' + err); })
+      .then(function () { saveBtn.disabled = false; saveBtn.innerHTML = '💾 Salvar'; });
   });
 })();
 </script>
