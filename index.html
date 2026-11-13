@@ -2224,6 +2224,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'ex-carga-btn';
+    btn.innerHTML = '🏋️ Adicionar peso';
     btn.setAttribute('aria-label', 'Adicionar ou editar o peso deste exercício');
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
@@ -2362,6 +2363,147 @@ document.addEventListener('DOMContentLoaded', function () {
     window.scrollTo(0,0);
   }
   vtabs.forEach(function(b){ b.addEventListener('click',function(){ setView(b.getAttribute('data-view')); }); });
+
+  /* ---- swipe horizontal (mobile): arrasta seguindo o dedo e troca Treino <-> Dashboard ---- */
+  (function(){
+    var active = false, startX = 0, startY = 0, engaged = false;
+    var fromDash = false, restMain = 0, restDash = 0, savedTop = 0, W = 0;
+    var COMMIT = 0.6; // % da largura da tela necessária p/ concluir a troca
+
+    function modalAberto(){
+      var sb = document.getElementById('sidebar');
+      if (sb && sb.classList.contains('open')) return true;
+      if (document.querySelector('.bottom-sheet.open')) return true;
+      if (document.querySelector('.modal-backdrop:not([hidden])')) return true;
+      return false;
+    }
+    function dentroScrollX(el){
+      while (el && el !== document.body && el !== document.documentElement){
+        if (el.scrollWidth > el.clientWidth + 1){
+          var s = window.getComputedStyle(el);
+          if (s.overflowX === 'auto' || s.overflowX === 'scroll') return true;
+        }
+        el = el.parentElement;
+      }
+      return false;
+    }
+    function setX(el, x){ el.style.transform = 'translate3d(' + x + 'px,0,0)'; }
+
+    function engage(){
+      W = window.innerWidth;
+      savedTop = window.scrollY;
+      fromDash = !dash.hidden;
+      // posições de repouso de cada view
+      restMain = fromDash ? -W : 0;
+      restDash = fromDash ? 0 : W;
+      var incoming = fromDash ? main : dash; // a view que vai entrar
+      incoming.hidden = false;
+      [main, dash].forEach(function(el){
+        el.style.transition = 'none';
+        el.style.willChange = 'transform';
+      });
+      // só a view que entra sai do fluxo (fixa na mesma posição visual do scroll atual)
+      // clamp: se ela for mais curta que o scroll, alinha pelo fim p/ não aparecer em branco
+      var maxTop = Math.max(0, incoming.scrollHeight - window.innerHeight);
+      var topOffset = Math.min(savedTop, maxTop);
+      incoming.style.position = 'fixed';
+      incoming.style.top = (-topOffset) + 'px';
+      incoming.style.left = '0';
+      incoming.style.width = '100%';
+      setX(main, restMain);
+      setX(dash, restDash);
+      document.body.style.overflow = 'hidden';
+      if (!fromDash) carregar(); // pré-carrega o dashboard p/ não aparecer vazio no meio do gesto
+    }
+
+    function cleanup(){
+      [main, dash].forEach(function(el){
+        el.style.position = '';
+        el.style.top = '';
+        el.style.left = '';
+        el.style.width = '';
+        el.style.transform = '';
+        el.style.transition = '';
+        el.style.willChange = '';
+      });
+      document.body.style.overflow = '';
+    }
+
+    function animateTo(targetDash){
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var done = false;
+      function finish(){
+        if (done) return; done = true;
+        cleanup();
+        setView(targetDash ? 'dashboard' : 'treino');
+      }
+      if (reduce){ finish(); return; }
+      var t = 'transform .32s cubic-bezier(.2,.8,.2,1)';
+      main.style.transition = t;
+      dash.style.transition = t;
+      setX(main, targetDash ? -W : 0);
+      setX(dash, targetDash ? 0 : W);
+      main.addEventListener('transitionend', finish, {once:true});
+      dash.addEventListener('transitionend', finish, {once:true});
+      setTimeout(finish, 420); // fallback se transitionend não disparar
+    }
+
+    function gestureStart(cx, cy, target){
+      if (active) return;
+      if (modalAberto() || dentroScrollX(target)) return;
+      active = true;
+      engaged = false;
+      startX = cx;
+      startY = cy;
+    }
+    function gestureMove(cx, cy){
+      if (!active) return;
+      var dx = cx - startX;
+      var dy = cy - startY;
+      if (!engaged){
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10){
+          var onDash = !dash.hidden;
+          // só engata se o gesto aponta para a outra aba
+          if ((dx < 0 && !onDash) || (dx > 0 && onDash)) engage();
+          else active = false; // direção inválida: ignora o gesto
+        }
+        return;
+      }
+      var off = fromDash ? Math.max(0, Math.min(W, dx)) : Math.max(-W, Math.min(0, dx));
+      setX(main, restMain + off);
+      setX(dash, restDash + off);
+    }
+    function gestureEnd(cx){
+      if (!active) return;
+      var dx = cx - startX;
+      active = false;
+      if (!engaged) return;
+      engaged = false;
+      if (fromDash) animateTo(dx / W >= COMMIT ? false : true);   // direita: Dashboard -> Treino
+      else animateTo((-dx) / W >= COMMIT ? true : false);          // esquerda: Treino -> Dashboard
+    }
+
+    // Touch (celular real / emulação de toque no DevTools)
+    document.addEventListener('touchstart', function(e){
+      if (e.touches.length !== 1) return;
+      gestureStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
+    }, {passive:true});
+    document.addEventListener('touchmove', function(e){
+      if (e.touches.length !== 1) return;
+      gestureMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, {passive:true});
+    document.addEventListener('touchend', function(e){
+      var t = e.changedTouches[0];
+      if (!t) return;
+      gestureEnd(t.clientX);
+    }, {passive:true});
+    document.addEventListener('touchcancel', function(e){
+      var t = e.changedTouches[0];
+      if (!t) return;
+      gestureEnd(t.clientX);
+    }, {passive:true});
+  })();
+
   document.querySelectorAll('#sidebarNavDash .side-link').forEach(function(link){
     link.addEventListener('click', function(e){
       e.preventDefault();
