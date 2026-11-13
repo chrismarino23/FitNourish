@@ -105,6 +105,7 @@ body{
 
 /* ---------- layout ---------- */
 .container{max-width:1180px;margin:0 auto;padding:0 22px}
+#main,#view-dashboard{touch-action:pan-y pinch-zoom}
 
 /* ---------- top nav ---------- */
 .nav{
@@ -2366,8 +2367,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ---- swipe horizontal (mobile): arrasta seguindo o dedo e troca Treino <-> Dashboard ---- */
   (function(){
-    var active = false, startX = 0, startY = 0, engaged = false;
-    var fromDash = false, restMain = 0, restDash = 0, savedTop = 0, W = 0;
+    var active = false, engaged = false, busy = false;
+    var startX = 0, startY = 0;
+    var fromDash = false, restMain = 0, restDash = 0, W = 0;
     var COMMIT = 0.6; // % da largura da tela necessária p/ concluir a troca
 
     function modalAberto(){
@@ -2391,87 +2393,56 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function engage(){
       W = window.innerWidth;
-      savedTop = window.scrollY;
       fromDash = !dash.hidden;
-      // posições de repouso de cada view
       restMain = fromDash ? -W : 0;
       restDash = fromDash ? 0 : W;
-      var incoming = fromDash ? main : dash; // a view que vai entrar
+      var incoming = fromDash ? main : dash; // view que vai entrar
       incoming.hidden = false;
-      [main, dash].forEach(function(el){
-        el.style.transition = 'none';
-        el.style.willChange = 'transform';
-      });
-      // só a view que entra sai do fluxo (fixa na mesma posição visual do scroll atual)
-      // clamp: se ela for mais curta que o scroll, alinha pelo fim p/ não aparecer em branco
-      var maxTop = Math.max(0, incoming.scrollHeight - window.innerHeight);
-      var topOffset = Math.min(savedTop, maxTop);
+      main.style.transition = 'none';
+      dash.style.transition = 'none';
       incoming.style.position = 'fixed';
-      incoming.style.top = (-topOffset) + 'px';
+      incoming.style.top = '0';
       incoming.style.left = '0';
       incoming.style.width = '100%';
       setX(main, restMain);
       setX(dash, restDash);
-      document.body.style.overflow = 'hidden';
-      if (!fromDash) carregar(); // pré-carrega o dashboard p/ não aparecer vazio no meio do gesto
+      engaged = true;
     }
 
     function cleanup(){
       [main, dash].forEach(function(el){
+        el.style.transition = '';
+        el.style.transform = '';
         el.style.position = '';
         el.style.top = '';
         el.style.left = '';
         el.style.width = '';
-        el.style.transform = '';
-        el.style.transition = '';
-        el.style.willChange = '';
       });
-      document.body.style.overflow = '';
     }
 
     function animateTo(targetDash){
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var done = false;
-      function finish(){
-        if (done) return; done = true;
-        cleanup();
-        setView(targetDash ? 'dashboard' : 'treino');
-      }
-      if (reduce){ finish(); return; }
-      var t = 'transform .32s cubic-bezier(.2,.8,.2,1)';
+      var dur = reduce ? 0 : 320;
+      var t = reduce ? 'none' : 'transform ' + dur + 'ms cubic-bezier(.2,.8,.2,1)';
       main.style.transition = t;
       dash.style.transition = t;
       setX(main, targetDash ? -W : 0);
       setX(dash, targetDash ? 0 : W);
-      main.addEventListener('transitionend', finish, {once:true});
-      dash.addEventListener('transitionend', finish, {once:true});
-      setTimeout(finish, 420); // fallback se transitionend não disparar
+      busy = true;
+      setTimeout(function(){
+        cleanup();
+        busy = false;
+        setView(targetDash ? 'dashboard' : 'treino');
+      }, dur + 40);
     }
 
     function gestureStart(cx, cy, target){
-      if (active) return;
+      if (active || busy) return;
       if (modalAberto() || dentroScrollX(target)) return;
       active = true;
       engaged = false;
       startX = cx;
       startY = cy;
-    }
-    function gestureMove(cx, cy){
-      if (!active) return;
-      var dx = cx - startX;
-      var dy = cy - startY;
-      if (!engaged){
-        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10){
-          var onDash = !dash.hidden;
-          // só engata se o gesto aponta para a outra aba
-          if ((dx < 0 && !onDash) || (dx > 0 && onDash)) engage();
-          else active = false; // direção inválida: ignora o gesto
-        }
-        return;
-      }
-      var off = fromDash ? Math.max(0, Math.min(W, dx)) : Math.max(-W, Math.min(0, dx));
-      setX(main, restMain + off);
-      setX(dash, restDash + off);
     }
     function gestureEnd(cx){
       if (!active) return;
@@ -2488,19 +2459,41 @@ document.addEventListener('DOMContentLoaded', function () {
       if (e.touches.length !== 1) return;
       gestureStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
     }, {passive:true});
+
     document.addEventListener('touchmove', function(e){
       if (e.touches.length !== 1) return;
-      gestureMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, {passive:true});
+      if (!active) return;
+      var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+      var dx = cx - startX, dy = cy - startY;
+      if (!engaged){
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10){
+          var onDash = !dash.hidden;
+          // só engata se o gesto aponta para a outra aba
+          if ((dx < 0 && !onDash) || (dx > 0 && onDash)){
+            e.preventDefault();
+            engage();
+          } else {
+            active = false; // direção inválida: ignora o gesto
+          }
+        }
+        return;
+      }
+      e.preventDefault();
+      var off = fromDash ? Math.max(0, Math.min(W, dx)) : Math.max(-W, Math.min(0, dx));
+      setX(main, restMain + off);
+      setX(dash, restDash + off);
+    }, {passive:false});
+
     document.addEventListener('touchend', function(e){
-      var t = e.changedTouches[0];
-      if (!t) return;
-      gestureEnd(t.clientX);
+      var t = e.changedTouches && e.changedTouches[0];
+      if (t) gestureEnd(t.clientX);
     }, {passive:true});
+
     document.addEventListener('touchcancel', function(e){
-      var t = e.changedTouches[0];
-      if (!t) return;
-      gestureEnd(t.clientX);
+      var t = e.changedTouches && e.changedTouches[0];
+      if (t){ gestureEnd(t.clientX); return; }
+      if (engaged){ engaged = false; active = false; animateTo(fromDash); }
+      else active = false;
     }, {passive:true});
   })();
 
